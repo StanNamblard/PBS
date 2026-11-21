@@ -1,7 +1,32 @@
-# Architecture — Phase 0 (proposition à valider)
+# Architecture BPS
 
-> Statut : **brouillon**, à valider avant la phase 1. Les choix marqués ❓ dépendent de tes réponses.
-> Nom de code provisoire de l'app : **PBS** (à remplacer par le nom définitif).
+> Statut : **validé** (phase 0). Nom provisoire de l'app : **BPS**.
+> Les décisions ci-dessous **priment** sur les propositions détaillées plus bas.
+
+## ✅ Décisions validées
+
+| # | Sujet | Décision |
+|---|---|---|
+| 1 | Nom | **BPS** (provisoire) |
+| 2 | Flux d'échange | **Modèle A** : envoi → file d'attente → match → révélation simultanée (3-2-1) |
+| 3 | Notification quotidienne | **Vagues régionales** (heure aléatoire 11 h–21 h locale par région, créneaux qui se chevauchent) + option heure fixe |
+| 4 | Conservation des selfies | Visibles **24 h après le match** (dans l'échange privé entre les deux personnes), puis **supprimés** du stockage |
+| 5 | Re-match / expiration | Pas de nouveau match entre deux mêmes personnes avant **30 jours** ; selfie en attente **expiré après 30 min** |
+| 6 | QR code | Scan = **follow simple**. La personne suivie décide si elle suit en retour |
+| 7 | Comptes privés | Comptes **publics par défaut**, option « compte privé » disponible **dès le lancement** (follow = demande à accepter) |
+| 8 | Messagerie | **Seul un abonné peut écrire**. Follow mutuel → boîte principale ; sinon → boîte Demandes. **Accusés de lecture désactivés** pour les messages en Demandes |
+| 9 | Langues | Monde entier, **10 langues** : en, zh, hi, es, fr, ar, bn, pt, ru, ur (arabe et ourdou en droite-à-gauche). FR + EN complets dès la phase 1, les 8 autres en phase 7 (traductions à faire relire par des natifs) |
+| 10 | Structure juridique | Pas de société : compte Apple Developer **individuel** (ton nom légal apparaîtra sur l'App Store) |
+| 11 | Appareil de test | **iPhone** (Expo Go jusqu'à la phase 2, build de développement à partir de la phase 3) |
+| 12 | Budget | ~**100 €/mois** au départ |
+
+Autres choix techniques faits en phase 1 :
+- **Avatars** : bucket en lecture publique, noms de fichiers aléatoires (pour la mise en cache). Selfies, posts, stories et photos de DM restent **privés** (URLs signées).
+- **Date de naissance** : saisie neutre (aucune date pré-remplie), **non modifiable**. Un refus < 18 ans bloque le compte définitivement **et** l'appareil.
+- **Connexion** : email + code à 6 chiffres (OTP) et Sign in with Apple au lancement ; Google ensuite ; SMS plus tard.
+- **CGU** : 3 consentements distincts non pré-cochés, version + date enregistrées côté serveur.
+
+---
 
 ---
 
@@ -189,7 +214,7 @@ Règles du choix de candidat (dans une seule requête SQL indexée) :
 
 - Le QR encode un lien `https://<domaine>/q/<jeton>` (s'ouvre dans l'app via universal link, ou mène au store si l'app n'est pas installée).
 - Jeton aléatoire 128 bits, **seul son hash est stocké**. Régénérable à tout moment (l'ancien est révoqué).
-- **Recommandation : scan = follow mutuel automatique.** Montrer son QR à quelqu'un en face de soi est un consentement explicite ; le follow mutuel place directement la conversation en boîte principale. Le propriétaire reçoit une notif et peut retirer le lien. Alternative ❓ : scan = follow simple + proposition « suivre en retour ».
+- **Décidé : scan = follow simple.** Le propriétaire du QR reçoit une notification et choisit de suivre en retour ou non.
 - Rate limit sur la résolution de jetons (anti-force brute).
 
 ### 3.5 Messagerie et boîte Spam

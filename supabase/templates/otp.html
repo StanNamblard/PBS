@@ -1,0 +1,9 @@
+<!-- Modèle d'email du code de connexion. À coller aussi dans Supabase :
+     Authentication → Emails → "Magic Link" et "Confirm signup". -->
+<div style="font-family:Inter,Arial,sans-serif;max-width:420px;margin:auto;padding:24px">
+  <h2 style="margin:0 0 12px">BPS</h2>
+  <p>Ton code de connexion / Your sign-in code:</p>
+  <p style="font-size:32px;font-weight:700;letter-spacing:8px;margin:16px 0">{{ .Token }}</p>
+  <p style="color:#666;font-size:13px">Valable 10 minutes. Si tu n'as rien demandé, ignore cet email.<br>
+  Valid for 10 minutes. If you didn't request it, ignore this email.</p>
+</div>

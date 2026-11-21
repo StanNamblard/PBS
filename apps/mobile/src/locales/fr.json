@@ -1,0 +1,142 @@
+{
+  "common": {
+    "continue": "Continuer",
+    "retry": "Réessayer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "back": "Retour",
+    "signOut": "Se déconnecter",
+    "comingSoon": "Bientôt disponible",
+    "phase": "Arrive en phase {{n}}"
+  },
+  "welcome": {
+    "tagline": "Un selfie. Un inconnu.\nChaque jour.",
+    "subtitle": "Envoie un selfie, reçois celui de quelqu'un, quelque part dans le monde. Les deux se révèlent en même temps.",
+    "start": "Commencer",
+    "adultsOnly": "Réservé aux personnes de 18 ans et plus"
+  },
+  "signIn": {
+    "title": "Connexion",
+    "subtitle": "Reçois un code à 6 chiffres par email. Pas de mot de passe.",
+    "email": "Adresse email",
+    "emailPlaceholder": "toi@exemple.com",
+    "sendCode": "Recevoir mon code",
+    "or": "ou",
+    "apple": "Continuer avec Apple",
+    "google": "Continuer avec Google",
+    "invalidEmail": "Adresse email invalide"
+  },
+  "verify": {
+    "title": "Entre ton code",
+    "subtitle": "Envoyé à {{email}}",
+    "code": "Code à 6 chiffres",
+    "submit": "Valider",
+    "resend": "Renvoyer le code",
+    "resendIn": "Renvoyer dans {{s}} s",
+    "changeEmail": "Changer d'adresse",
+    "invalidCode": "Code incorrect ou expiré"
+  },
+  "birthdate": {
+    "title": "Ta date de naissance",
+    "subtitle": "BPS est réservé aux personnes majeures. Elle ne sera jamais affichée sur ton profil et ne pourra plus être modifiée.",
+    "day": "JJ",
+    "month": "MM",
+    "year": "AAAA",
+    "invalid": "Date invalide",
+    "confirmTitle": "Confirmer ?",
+    "confirmBody": "Tu es né(e) le {{date}}. Cette date ne pourra plus être modifiée."
+  },
+  "underage": {
+    "title": "Désolé",
+    "body": "BPS est réservé aux personnes de 18 ans et plus. Ton compte ne peut pas être créé."
+  },
+  "suspended": {
+    "title": "Compte suspendu",
+    "body": "Ton compte a été suspendu suite à une décision de modération. Contacte le support si tu penses qu'il s'agit d'une erreur."
+  },
+  "terms": {
+    "title": "Avant de commencer",
+    "subtitle": "BPS repose sur le respect. Pas de nudité, pas de harcèlement, pas de contenu illégal : chaque photo est vérifiée et tu peux signaler à tout moment.",
+    "acceptTerms": "J'accepte les Conditions d'utilisation",
+    "acceptPrivacy": "J'ai lu la Politique de confidentialité et j'accepte le traitement de mes données pour faire fonctionner le service",
+    "acceptRules": "Je m'engage à respecter les règles de la communauté",
+    "read": "Lire"
+  },
+  "profileSetup": {
+    "title": "Ton profil",
+    "subtitle": "C'est ce que verront les personnes avec qui tu échanges un selfie.",
+    "addPhoto": "Ajouter une photo",
+    "changePhoto": "Changer la photo",
+    "username": "Pseudo",
+    "usernameHint": "3 à 30 caractères : lettres minuscules, chiffres, « _ » et « . »",
+    "usernameTaken": "Ce pseudo n'est pas disponible",
+    "usernameAvailable": "Disponible ✓",
+    "usernameInvalid": "Format invalide",
+    "displayName": "Nom affiché (facultatif)",
+    "bio": "Bio (facultatif)",
+    "bioCounter": "{{n}}/160",
+    "country": "Pays",
+    "chooseCountry": "Choisir mon pays",
+    "searchCountry": "Rechercher un pays",
+    "finish": "C'est parti !"
+  },
+  "tabs": {
+    "home": "Accueil",
+    "messages": "Messages",
+    "selfie": "Selfie",
+    "qr": "QR",
+    "profile": "Profil"
+  },
+  "home": {
+    "title": "Ton fil",
+    "empty": "Le fil et les stories des personnes que tu suis apparaîtront ici."
+  },
+  "selfie": {
+    "title": "Selfie du jour",
+    "cta": "Envoyer un selfie",
+    "body": "Prends un selfie, il sera échangé avec celui d'un inconnu quelque part dans le monde."
+  },
+  "messages": { "title": "Messages" },
+  "qr": { "title": "Mon QR code" },
+  "profile": {
+    "followers": "Abonnés",
+    "following": "Abonnements",
+    "posts": "Publications",
+    "settings": "Paramètres"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "appearance": "Apparence",
+    "themeSystem": "Système",
+    "themeLight": "Clair",
+    "themeDark": "Sombre",
+    "account": "Compte",
+    "deleteAccount": "Supprimer mon compte",
+    "exportData": "Exporter mes données",
+    "legal": "Informations légales",
+    "terms": "Conditions d'utilisation",
+    "privacy": "Politique de confidentialité",
+    "version": "Version {{v}}",
+    "languageNotTranslated": "Traduction en cours — l'anglais est utilisé en attendant"
+  },
+  "setup": {
+    "title": "Configuration manquante",
+    "body": "Crée le fichier apps/mobile/.env à partir de .env.example avec l'URL et la clé de ton projet Supabase, puis relance l'app."
+  },
+  "errors": {
+    "generic": "Une erreur est survenue. Réessaie.",
+    "username_unavailable": "Ce pseudo n'est pas disponible",
+    "invalid_timezone": "Fuseau horaire invalide",
+    "invalid_locale": "Langue non prise en charge",
+    "invalid_birth_date": "Date de naissance invalide",
+    "birth_date_already_set": "Ta date de naissance est déjà enregistrée",
+    "underage_locked": "BPS est réservé aux 18 ans et plus",
+    "onboarding_not_allowed": "Action impossible à cette étape",
+    "terms_required": "Tu dois accepter les conditions",
+    "invalid_avatar_path": "Photo invalide",
+    "not_authenticated": "Session expirée, reconnecte-toi",
+    "photoPermission": "Autorise l'accès aux photos dans les réglages de ton téléphone",
+    "network": "Pas de connexion internet"
+  }
+}

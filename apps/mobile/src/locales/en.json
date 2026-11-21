@@ -1,0 +1,142 @@
+{
+  "common": {
+    "continue": "Continue",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "save": "Save",
+    "back": "Back",
+    "signOut": "Sign out",
+    "comingSoon": "Coming soon",
+    "phase": "Coming in phase {{n}}"
+  },
+  "welcome": {
+    "tagline": "One selfie. One stranger.\nEvery day.",
+    "subtitle": "Send a selfie, get one back from someone, somewhere in the world. Both are revealed at the same time.",
+    "start": "Get started",
+    "adultsOnly": "For people aged 18 and over only"
+  },
+  "signIn": {
+    "title": "Sign in",
+    "subtitle": "Get a 6-digit code by email. No password.",
+    "email": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "sendCode": "Send my code",
+    "or": "or",
+    "apple": "Continue with Apple",
+    "google": "Continue with Google",
+    "invalidEmail": "Invalid email address"
+  },
+  "verify": {
+    "title": "Enter your code",
+    "subtitle": "Sent to {{email}}",
+    "code": "6-digit code",
+    "submit": "Verify",
+    "resend": "Resend code",
+    "resendIn": "Resend in {{s}}s",
+    "changeEmail": "Use another email",
+    "invalidCode": "Wrong or expired code"
+  },
+  "birthdate": {
+    "title": "Your date of birth",
+    "subtitle": "BPS is for adults only. It will never be shown on your profile and cannot be changed later.",
+    "day": "DD",
+    "month": "MM",
+    "year": "YYYY",
+    "invalid": "Invalid date",
+    "confirmTitle": "Confirm?",
+    "confirmBody": "You were born on {{date}}. This date cannot be changed later."
+  },
+  "underage": {
+    "title": "Sorry",
+    "body": "BPS is only for people aged 18 and over. Your account cannot be created."
+  },
+  "suspended": {
+    "title": "Account suspended",
+    "body": "Your account has been suspended following a moderation decision. Contact support if you think this is a mistake."
+  },
+  "terms": {
+    "title": "Before you start",
+    "subtitle": "BPS is built on respect. No nudity, no harassment, no illegal content: every photo is checked and you can report at any time.",
+    "acceptTerms": "I accept the Terms of Service",
+    "acceptPrivacy": "I have read the Privacy Policy and agree to the processing of my data to run the service",
+    "acceptRules": "I agree to follow the community guidelines",
+    "read": "Read"
+  },
+  "profileSetup": {
+    "title": "Your profile",
+    "subtitle": "This is what people you swap selfies with will see.",
+    "addPhoto": "Add a photo",
+    "changePhoto": "Change photo",
+    "username": "Username",
+    "usernameHint": "3 to 30 characters: lowercase letters, digits, \"_\" and \".\"",
+    "usernameTaken": "This username is not available",
+    "usernameAvailable": "Available ✓",
+    "usernameInvalid": "Invalid format",
+    "displayName": "Display name (optional)",
+    "bio": "Bio (optional)",
+    "bioCounter": "{{n}}/160",
+    "country": "Country",
+    "chooseCountry": "Choose my country",
+    "searchCountry": "Search a country",
+    "finish": "Let's go!"
+  },
+  "tabs": {
+    "home": "Home",
+    "messages": "Messages",
+    "selfie": "Selfie",
+    "qr": "QR",
+    "profile": "Profile"
+  },
+  "home": {
+    "title": "Your feed",
+    "empty": "Posts and stories from people you follow will show up here."
+  },
+  "selfie": {
+    "title": "Daily selfie",
+    "cta": "Send a selfie",
+    "body": "Take a selfie: it will be swapped with a stranger's, somewhere in the world."
+  },
+  "messages": { "title": "Messages" },
+  "qr": { "title": "My QR code" },
+  "profile": {
+    "followers": "Followers",
+    "following": "Following",
+    "posts": "Posts",
+    "settings": "Settings"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "appearance": "Appearance",
+    "themeSystem": "System",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "account": "Account",
+    "deleteAccount": "Delete my account",
+    "exportData": "Export my data",
+    "legal": "Legal",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "version": "Version {{v}}",
+    "languageNotTranslated": "Translation in progress — English is used in the meantime"
+  },
+  "setup": {
+    "title": "Missing configuration",
+    "body": "Create apps/mobile/.env from .env.example with your Supabase project URL and key, then restart the app."
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "username_unavailable": "This username is not available",
+    "invalid_timezone": "Invalid time zone",
+    "invalid_locale": "Unsupported language",
+    "invalid_birth_date": "Invalid date of birth",
+    "birth_date_already_set": "Your date of birth is already saved",
+    "underage_locked": "BPS is for people aged 18 and over",
+    "onboarding_not_allowed": "This action is not available at this step",
+    "terms_required": "You must accept the terms",
+    "invalid_avatar_path": "Invalid photo",
+    "not_authenticated": "Session expired, please sign in again",
+    "photoPermission": "Allow photo access in your phone settings",
+    "network": "No internet connection"
+  }
+}
