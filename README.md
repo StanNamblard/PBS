@@ -121,7 +121,7 @@ Si tu as déjà fait la méthode du navigateur, n'utilise pas celle-ci (elle ess
 
 ### 4. Configurer la connexion par email
 
-But de l'étape : que l'email de connexion contienne un **code à 6 chiffres** (à taper dans l'app) au lieu d'un lien. Sans ça, impossible de se connecter dans l'app.
+But de l'étape : que l'email de connexion contienne un **code à chiffres** (à taper dans l'app) au lieu d'un lien. Sans ça, impossible de se connecter dans l'app.
 
 > 💶 **Tout est gratuit.** Supabase bloque la modification des modèles d'emails tant qu'on utilise son service d'envoi par défaut (les champs sont grisés, ou un message demande de configurer un « custom SMTP »). On branche donc d'abord **ta propre adresse Gmail** comme expéditeur : gratuit, jusqu'à ~500 emails par jour, largement assez pour les tests.
 
@@ -163,13 +163,13 @@ C'est un mot de passe spécial de 16 lettres qui permet à Supabase d'envoyer de
    - **Save changes**.
 3. Fais exactement la même chose pour **Confirm signup**.
 
-Le texte important dans ce modèle est `{{ .Token }}` : c'est là que Supabase met le code à 6 chiffres.
+Le texte important dans ce modèle est `{{ .Token }}` : c'est là que Supabase met le code (6 ou 8 chiffres selon le projet : l'app accepte les deux).
 
 #### 4.4 Durée de validité du code
 
 **Authentication → Sign In / Providers** → **Email** : vérifie que le fournisseur *Email* est activé. Si le champ **Email OTP Expiration** est modifiable, mets `600` (10 minutes) puis **Save**. S'il ne l'est pas, ce n'est pas grave : laisse la valeur par défaut.
 
-✅ Étape 4 terminée : au premier essai de connexion dans l'app, tu recevras un email « Ton code BPS » contenant 6 chiffres (regarde aussi dans les spams).
+✅ Étape 4 terminée : au premier essai de connexion dans l'app, tu recevras un email « Ton code BPS » contenant un code de 6 ou 8 chiffres (regarde aussi dans les spams).
 
 **Ça bloque ?**
 

@@ -17,7 +17,7 @@
   },
   "signIn": {
     "title": "Sign in",
-    "subtitle": "Get a 6-digit code by email. No password.",
+    "subtitle": "Get a sign-in code by email. No password.",
     "email": "Email address",
     "emailPlaceholder": "you@example.com",
     "sendCode": "Send my code",
@@ -29,7 +29,7 @@
   "verify": {
     "title": "Enter your code",
     "subtitle": "Sent to {{email}}",
-    "code": "6-digit code",
+    "code": "Code from the email",
     "submit": "Verify",
     "resend": "Resend code",
     "resendIn": "Resend in {{s}}s",

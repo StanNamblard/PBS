@@ -7,7 +7,7 @@ import { Button } from '@/components/Button';
 import { Screen } from '@/components/Screen';
 import { TextField } from '@/components/TextField';
 import { sendEmailOtp, verifyEmailOtp } from '@/features/auth/api';
-import { isValidOtp } from '@/features/auth/validation';
+import { isValidOtp, OTP_MAX_LENGTH } from '@/features/auth/validation';
 import { typography } from '@/theme/tokens';
 
 const RESEND_DELAY = 60;
@@ -40,10 +40,11 @@ export default function VerifyScreen() {
     }
   };
 
+  // Pas d'envoi automatique : la longueur du code dépend du réglage Supabase
+  // (6 à 10 chiffres). L'utilisateur valide avec le bouton ou la touche du clavier.
   const onChange = (v: string) => {
-    const digits = v.replace(/\D/g, '').slice(0, 6);
-    setCode(digits);
-    if (digits.length === 6) void submit(digits);
+    setCode(v.replace(/\D/g, '').slice(0, OTP_MAX_LENGTH));
+    setError(null);
   };
 
   return (
@@ -75,9 +76,11 @@ export default function VerifyScreen() {
         keyboardType="number-pad"
         textContentType="oneTimeCode"
         autoComplete="one-time-code"
-        maxLength={6}
+        maxLength={OTP_MAX_LENGTH}
+        returnKeyType="done"
+        onSubmitEditing={() => void submit()}
         autoFocus
-        style={{ ...typography.title, letterSpacing: 8, textAlign: 'center' }}
+        style={{ ...typography.title, letterSpacing: 6, textAlign: 'center' }}
         error={error}
       />
     </Screen>

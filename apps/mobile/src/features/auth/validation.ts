@@ -67,6 +67,14 @@ export function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
 }
 
+/**
+ * Longueur du code reçu par email. Supabase permet de la régler de 6 à 10
+ * chiffres (Authentication → Email → "Email OTP Length") ; selon les projets
+ * la valeur par défaut est 6 ou 8. L'app accepte donc toute la plage.
+ */
+export const OTP_MIN_LENGTH = 6;
+export const OTP_MAX_LENGTH = 10;
+
 export function isValidOtp(code: string): boolean {
-  return /^\d{6}$/.test(code);
+  return new RegExp(`^\\d{${OTP_MIN_LENGTH},${OTP_MAX_LENGTH}}$`).test(code);
 }

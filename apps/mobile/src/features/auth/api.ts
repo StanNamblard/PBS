@@ -8,7 +8,7 @@ import { supabase } from '@/lib/supabase';
 
 export type OnboardingState = 'underage' | 'age_required' | 'profile_required' | 'suspended' | 'complete';
 
-/** Envoie un code de connexion à 6 chiffres par email (crée le compte si besoin). */
+/** Envoie un code de connexion (6 à 10 chiffres selon le réglage Supabase) par email (crée le compte si besoin). */
 export async function sendEmailOtp(email: string) {
   const { error } = await supabase.auth.signInWithOtp({
     email: email.trim().toLowerCase(),

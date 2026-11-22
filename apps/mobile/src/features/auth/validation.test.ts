@@ -55,9 +55,12 @@ describe('email et code', () => {
     expect(isValidEmail('toi@exemple')).toBe(false);
     expect(isValidEmail('toi exemple.com')).toBe(false);
   });
-  it('valide le code OTP à 6 chiffres', () => {
+  it('valide le code OTP de 6 à 10 chiffres', () => {
     expect(isValidOtp('123456')).toBe(true);
+    expect(isValidOtp('12345678')).toBe(true);
+    expect(isValidOtp('1234567890')).toBe(true);
     expect(isValidOtp('12345')).toBe(false);
+    expect(isValidOtp('12345678901')).toBe(false);
     expect(isValidOtp('12345a')).toBe(false);
   });
 });
