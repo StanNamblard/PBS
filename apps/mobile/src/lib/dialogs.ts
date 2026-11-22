@@ -1,15 +1,39 @@
 import { Alert, Platform } from 'react-native';
+import { create } from 'zustand';
 
 /**
  * Boîtes de dialogue compatibles iPhone, Android ET web.
- * (Sur le web, Alert.alert de React Native n'affiche rien : on utilise alors
- * les fenêtres du navigateur.)
+ * - Mobile : fenêtres natives (Alert).
+ * - Web : fenêtre dessinée par l'app (<DialogHost />), car Alert ne fait rien
+ *   sur le web et window.confirm est bloqué par les navigateurs intégrés
+ *   (WhatsApp, Discord, Instagram…).
  */
+
+export interface DialogRequest {
+  title: string;
+  message?: string;
+  confirmText: string;
+  /** Absent = simple message avec un seul bouton */
+  cancelText?: string;
+  destructive?: boolean;
+  resolve: (ok: boolean) => void;
+}
+
+export const useDialogStore = create<{ current: DialogRequest | null; set: (d: DialogRequest | null) => void }>((set) => ({
+  current: null,
+  set: (current) => set({ current }),
+}));
+
+function showInApp(req: Omit<DialogRequest, 'resolve'>): Promise<boolean> {
+  return new Promise((resolve) => {
+    useDialogStore.getState().set({ ...req, resolve });
+  });
+}
 
 /** Message simple avec un bouton OK. */
 export function notify(title: string, message?: string) {
   if (Platform.OS === 'web') {
-    window.alert(message ? `${title}\n\n${message}` : title);
+    void showInApp({ title, message, confirmText: 'OK' });
     return;
   }
   Alert.alert(title, message);
@@ -26,7 +50,7 @@ interface ConfirmOptions {
 /** Demande une confirmation. Renvoie true si l'utilisateur confirme. */
 export function confirm({ title, message, confirmText, cancelText, destructive }: ConfirmOptions): Promise<boolean> {
   if (Platform.OS === 'web') {
-    return Promise.resolve(window.confirm(message ? `${title}\n\n${message}` : title));
+    return showInApp({ title, message, confirmText, cancelText, destructive });
   }
   return new Promise((resolve) => {
     Alert.alert(

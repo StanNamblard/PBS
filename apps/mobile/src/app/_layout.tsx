@@ -13,6 +13,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
+import { DialogHost } from '@/components/DialogHost';
 import { Screen } from '@/components/Screen';
 import { AuthProvider, useAuth } from '@/features/auth/AuthProvider';
 import { isConfigured } from '@/lib/env';
@@ -39,6 +40,7 @@ export default function RootLayout() {
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
               <RootNavigator />
+              <DialogHost />
             </AuthProvider>
           </QueryClientProvider>
         </ThemeProvider>
