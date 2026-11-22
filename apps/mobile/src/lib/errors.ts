@@ -20,6 +20,7 @@ const KNOWN_CODES = [
   'cannot_follow_self',
   'rate_limited',
   'selfie_already_pending',
+  'qr_invalid',
 ] as const;
 
 export type ServerErrorCode = (typeof KNOWN_CODES)[number];

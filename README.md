@@ -16,8 +16,8 @@ docs/          Architecture et guides
 | 0 | Architecture | ✅ |
 | 1 | Projet, base de données, connexion, contrôle d'âge | ✅ testé sur iPhone |
 | 2 | Profil, publications, stories, follow, compte privé | ✅ testé |
-| 3 | Selfie du jour, matching, déblocage, rappels quotidiens | ✅ à tester (voir « Mettre à jour vers la phase 3 ») — notifications de match : avec le compte Apple Developer |
-| 4 | QR code | ⏳ |
+| 3 | Selfie du jour, matching, déblocage, rappels quotidiens | ✅ testé — notifications de match : avec le compte Apple Developer |
+| 4 | QR code (mon code + scanner) | ✅ à tester (voir « Mettre à jour vers la phase 4 ») |
 | 5 | Messagerie + boîte Demandes | ⏳ |
 | 6 | Modération, signalement, RGPD, back-office | ⏳ |
 | 7 | Finitions, 10 langues, publication | ⏳ |
@@ -85,6 +85,7 @@ Pour **chacun** des fichiers ci-dessous, **dans cet ordre** : nouvelle requête 
 | 4 | [20261123000100_phase2_storage.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261123000100_phase2_storage.sql) | 2 |
 | 5 | [20261124000000_phase3_selfies.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261124000000_phase3_selfies.sql) | 3 |
 | 6 | [20261124000100_phase3_storage.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261124000100_phase3_storage.sql) | 3 |
+| 7 | [20261125000000_phase4_qr.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261125000000_phase4_qr.sql) | 4 |
 
 #### 3.5 Vérifier que tout est en place
 
@@ -479,6 +480,42 @@ Les selfies ne sont **plus visibles** après 24 h (bloqué par le serveur). Cett
 > ⚠️ **Règle anti-répétition** : deux personnes ne peuvent pas être de nouveau appariées avant **30 jours**. À deux testeurs, le 2e essai restera donc en attente puis expirera (c'est normal !). Pour refaire un test entre vous, exécute dans Supabase → SQL Editor : `delete from public.match_pairs;` (efface seulement l'historique des paires). L'idéal : inviter un 3e testeur.
 
 **Ce qui n'est pas encore là :** la notification « Tu as un match ! » quand l'app est fermée (il faut le compte Apple Developer et un « build de développement » ; en attendant, laisse l'app ouverte ou reviens sur l'onglet selfie).
+
+---
+
+## Mettre à jour vers la phase 4 : le QR code
+
+### A. Base de données (navigateur) — 1 seul fichier
+
+Supabase → **SQL Editor** → **+** (page vide) → ouvre [20261125000000_phase4_qr.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261125000000_phase4_qr.sql) → **« Copy raw file »** → colle → **Run** → **« Success. No rows returned »**.
+
+✅ Vérification : **Table Editor** affiche les nouvelles tables `qr_tokens` et `qr_scan_attempts`.
+
+### B. App (PowerShell)
+
+```bash
+cd ~/Desktop/PBS
+git checkout -- .
+git pull
+cd apps/mobile
+npm ci
+npx expo start --tunnel -c
+```
+
+`npm ci` est **obligatoire** (nouveaux composants : génération de QR code, luminosité).
+
+### C. Tester (à deux téléphones, côte à côte)
+
+1. **Ton pote** : onglet **QR** → **Mon code**. Son QR code s'affiche sur fond blanc avec son @pseudo, et l'écran devient plus lumineux.
+2. **Toi** : onglet **QR** → **Scanner** → autorise la caméra → vise son code.
+   ✅ Vibration, puis la fiche **« Code scanné »** : photo, @pseudo, pays, nombre d'abonnés, bio.
+3. Touche **Suivre** → ✅ « Tu suis maintenant @… ». Lui ne te suit pas automatiquement : il voit ton nom dans ses **Abonnés** et décide de suivre en retour (ou non).
+4. **Compte privé** : s'il active *Compte privé* (Profil → ⚙️) et que tu scannes un code d'une 3e personne privée → « Demande envoyée ».
+5. **Régénérer** : ton pote touche **Générer un nouveau code** → confirme. Si tu scannes une **photo de l'ancien code** → « Ce QR code n'est plus valide ».
+6. Scanne un QR code quelconque (une étiquette, un site web) → « Ce n'est pas un QR code BPS ».
+7. Scanne ton **propre** code (photo de ton écran depuis un autre téléphone) → « C'est ton propre code 😄 ».
+
+> L'appareil photo normal de l'iPhone ne sait pas encore ouvrir BPS depuis un QR code (il faudra l'app installée et un nom de domaine, en phase 7) : scanne **depuis l'onglet QR de l'app**.
 
 ---
 

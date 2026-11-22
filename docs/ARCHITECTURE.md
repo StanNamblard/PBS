@@ -20,6 +20,11 @@
 | 11 | Appareil de test | **iPhone** (Expo Go jusqu'à la phase 2, build de développement à partir de la phase 3) |
 | 12 | Budget | ~**100 €/mois** au départ |
 
+Choix faits en phase 4 :
+- **QR code** = `bps://q/<jeton>` ; jeton aléatoire 128 bits (base64url, 22 caractères), seul son SHA-256 est stocké (`qr_tokens`), un seul actif par utilisateur, régénérable (l'ancien est révoqué). Le jeton en clair n'existe que sur le téléphone (SecureStore).
+- Scan = follow simple (source `qr`) ; compte privé → demande. Limitation : 60 résolutions/h et 10 échecs/h par utilisateur.
+- Plus tard (phase 7) : lien universel `https://<domaine>/q/<jeton>` pour ouvrir l'app ou le store depuis l'appareil photo de l'iPhone (le lecteur l'accepte déjà).
+
 Choix faits en phase 3 :
 - **Matching** dans Postgres (`_try_match`) : verrou de la ligne + `FOR UPDATE SKIP LOCKED` sur le candidat → jamais deux matchs pour un même selfie, même sous forte concurrence (test : 40 envois simultanés → 20 matchs, 0 doublon). Tri : pays différent d'abord, puis le plus ancien. Préférence « même langue » relâchée après 2 min. Pas de re-match avant 30 jours (`match_pairs`). 30 selfies max / heure.
 - **Courses simultanées** : si deux selfies arrivent exactement au même instant, aucun ne voit l'autre ; l'interrogation `poll_selfie` (toutes les 3 s pendant l'attente) relance le matching et les apparie.

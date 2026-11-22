@@ -133,7 +133,25 @@
     "title": "Messages"
   },
   "qr": {
-    "title": "My QR code"
+    "title": "QR code",
+    "myCode": "My code",
+    "scan": "Scan",
+    "myCodeHint": "Let someone in front of you scan this code: they'll be able to follow you.",
+    "regenerate": "Generate a new code",
+    "regenerateConfirm": "Your current code will stop working (including screenshots already shared). Continue?",
+    "regenerated": "New code ready.",
+    "scanHint": "Point at a friend's BPS QR code.",
+    "notBps": "This is not a BPS QR code.",
+    "cameraPermissionBody": "BPS needs the camera to scan QR codes.",
+    "resultTitle": "Scanned code",
+    "invalid": "This QR code is no longer valid. Ask your friend to show their current code.",
+    "itsYou": "That's your own code 😄",
+    "followed": "You now follow @{{username}}",
+    "requested": "Request sent to @{{username}} (private account)",
+    "alreadyFollowing": "You already follow @{{username}}",
+    "scanAnother": "Scan another code",
+    "privateHint": "Private account: your request will need to be approved.",
+    "followers": "{{n}} follower(s)"
   },
   "profile": {
     "followers": "Followers",
@@ -207,7 +225,9 @@
     "caption_too_long": "Caption too long",
     "user_not_found": "User not found",
     "cannot_follow_self": "You can't follow yourself",
-    "upload": "Upload failed. Check your connection and try again."
+    "upload": "Upload failed. Check your connection and try again.",
+    "qr_invalid": "This QR code is no longer valid.",
+    "tooManyAttempts": "Too many attempts. Try again in a while."
   },
   "time": {
     "now": "just now",
