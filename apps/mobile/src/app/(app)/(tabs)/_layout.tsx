@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View, type ColorValue } from 'react-native';
 
 import { SelfieButton } from '@/components/SelfieButton';
+import { useInboxCounts } from '@/features/messages/hooks';
 import { useTheme } from '@/theme/ThemeProvider';
 import { fonts } from '@/theme/tokens';
 
@@ -17,6 +18,7 @@ const icon =
 export default function TabsLayout() {
   const { t } = useTranslation();
   const { colors } = useTheme();
+  const { data: counts } = useInboxCounts();
 
   return (
     <Tabs
@@ -30,7 +32,16 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen name="home" options={{ title: t('tabs.home'), tabBarIcon: icon('home') }} />
-      <Tabs.Screen name="messages" options={{ title: t('tabs.messages'), tabBarIcon: icon('message-circle') }} />
+      <Tabs.Screen
+        name="messages"
+        options={{
+          title: t('tabs.messages'),
+          tabBarIcon: icon('message-circle'),
+          // Badge = non-lus de la boîte principale uniquement (les demandes restent silencieuses)
+          tabBarBadge: counts?.primary_unread ? counts.primary_unread : undefined,
+          tabBarBadgeStyle: { backgroundColor: colors.primary },
+        }}
+      />
       <Tabs.Screen
         name="selfie"
         options={{

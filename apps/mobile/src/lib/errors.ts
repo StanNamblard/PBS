@@ -21,6 +21,12 @@ const KNOWN_CODES = [
   'rate_limited',
   'selfie_already_pending',
   'qr_invalid',
+  'must_follow',
+  'request_pending',
+  'no_media_in_requests',
+  'empty_message',
+  'cannot_message_self',
+  'cannot_block_self',
 ] as const;
 
 export type ServerErrorCode = (typeof KNOWN_CODES)[number];

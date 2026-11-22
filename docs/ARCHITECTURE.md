@@ -20,6 +20,14 @@
 | 11 | Appareil de test | **iPhone** (Expo Go jusqu'à la phase 2, build de développement à partir de la phase 3) |
 | 12 | Budget | ~**100 €/mois** au départ |
 
+Choix faits en phase 5 :
+- **Dossier par participant** (`conversation_members.folder`) plutôt qu'un drapeau sur chaque message : `primary` si je suis l'autre ou si j'ai accepté, sinon `requests`. Un déclencheur sur `follows` fait basculer la conversation en principale dès que je suis l'autre (définitif via `accepted_at`).
+- **Droit d'écrire** : suivre l'autre, ou avoir accepté sa conversation (pour pouvoir répondre). Demande non acceptée : 1 message texte max, pas de photo, pas d'accusé de lecture. 30 messages/min max.
+- **Temps réel** : Supabase Realtime (`postgres_changes` sur `messages` et `conversation_members`, filtrés par la RLS). Badge = non-lus de la boîte principale uniquement.
+- **Supprimer** une conversation = la masquer de son côté (`hidden_at`) ; elle réapparaît avec un nouveau message.
+- **Blocage** (avancé de la phase 6) : supprime les follows, et `is_blocked` est vérifié dans le contenu, le profil, le follow, le matching, les selfies, le QR code et la messagerie. `is_blocked` n'est pas exposé à l'app.
+- **À faire** : push « nouveau message » (build de dev + Apple Developer), mise en sourdine (phase 6).
+
 Choix faits en phase 4 :
 - **QR code** = `bps://q/<jeton>` ; jeton aléatoire 128 bits (base64url, 22 caractères), seul son SHA-256 est stocké (`qr_tokens`), un seul actif par utilisateur, régénérable (l'ancien est révoqué). Le jeton en clair n'existe que sur le téléphone (SecureStore).
 - Scan = follow simple (source `qr`) ; compte privé → demande. Limitation : 60 résolutions/h et 10 échecs/h par utilisateur.

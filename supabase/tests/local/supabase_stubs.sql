@@ -49,3 +49,6 @@ grant all on storage.objects to authenticated;
 create function storage.foldername(name text) returns text[] language sql immutable as $$
   select (string_to_array(name, '/'))[1:array_length(string_to_array(name, '/'), 1) - 1]
 $$;
+
+-- Publication temps réel (existe déjà sur Supabase)
+create publication supabase_realtime;

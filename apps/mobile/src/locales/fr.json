@@ -130,7 +130,30 @@
     "notificationsBlocked": "Les notifications sont désactivées pour BPS dans les réglages de ton téléphone."
   },
   "messages": {
-    "title": "Messages"
+    "title": "Messages",
+    "primary": "Principale",
+    "requests": "Demandes",
+    "emptyPrimary": "Aucune conversation. Pour écrire à quelqu'un, suis-le puis touche « Message » sur son profil.",
+    "emptyRequests": "Aucune demande. Les messages des personnes que tu ne suis pas arrivent ici, sans notification.",
+    "photo": "📷 Photo",
+    "you": "Toi : ",
+    "placeholder": "Message…",
+    "send": "Envoyer",
+    "seen": "Vu",
+    "requestBanner": "@{{username}} souhaite t'écrire. Tu ne le suis pas : il ne verra pas si tu as lu son message.",
+    "accept": "Accepter",
+    "delete": "Supprimer",
+    "block": "Bloquer",
+    "deleteConfirm": "Supprimer cette conversation ? Elle disparaîtra de ton côté uniquement.",
+    "blockConfirm": "Bloquer @{{username}} ? Vous ne pourrez plus vous voir, vous suivre, vous écrire ni être appariés au selfie du jour. Cette personne ne sera pas prévenue.",
+    "blocked": "@{{username}} est bloqué(e).",
+    "mustFollow": "Suis @{{username}} pour pouvoir lui écrire.",
+    "requestPending": "Message envoyé. @{{username}} doit accepter ta demande (ou te suivre) pour que tu puisses lui écrire à nouveau.",
+    "noPhotoYet": "Les photos seront possibles quand @{{username}} aura accepté ta demande.",
+    "message": "Message",
+    "matchCard": "Votre échange de selfies",
+    "firstMessage": "Dis bonjour à @{{username}} 👋",
+    "unavailable": "Cette conversation n'est pas disponible."
   },
   "qr": {
     "title": "QR code",
@@ -175,7 +198,10 @@
     "removeFollowerConfirm": "Retirer @{{username}} de tes abonnés ? Cette personne ne sera pas prévenue.",
     "emptyList": "Personne pour l'instant.",
     "privateList": "Cette liste est privée.",
-    "followingButton": "Abonné ✓"
+    "followingButton": "Abonné ✓",
+    "more": "Plus d'options",
+    "blockUser": "Bloquer",
+    "reportUser": "Signaler"
   },
   "settings": {
     "title": "Paramètres",
@@ -200,7 +226,10 @@
     "copied": "Copié !",
     "openProfile": "Ouvrir un profil par identifiant",
     "open": "Ouvrir",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "blockedAccounts": "Comptes bloqués",
+    "noBlocked": "Aucun compte bloqué.",
+    "unblock": "Débloquer"
   },
   "setup": {
     "title": "Configuration manquante",
@@ -227,7 +256,13 @@
     "cannot_follow_self": "Tu ne peux pas te suivre toi-même",
     "upload": "L'envoi a échoué. Vérifie ta connexion et réessaie.",
     "qr_invalid": "Ce QR code n'est plus valide.",
-    "tooManyAttempts": "Trop d'essais. Réessaie dans un moment."
+    "tooManyAttempts": "Trop d'essais. Réessaie dans un moment.",
+    "must_follow": "Tu dois suivre cette personne pour lui écrire.",
+    "request_pending": "Attends que ta demande soit acceptée.",
+    "no_media_in_requests": "Pas de photo tant que ta demande n'est pas acceptée.",
+    "empty_message": "Message vide.",
+    "cannot_message_self": "Tu ne peux pas t'écrire à toi-même.",
+    "cannot_block_self": "Tu ne peux pas te bloquer toi-même."
   },
   "time": {
     "now": "à l'instant",

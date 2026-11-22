@@ -1,12 +1,15 @@
 import { router, Stack } from 'expo-router';
 import { useEffect } from 'react';
 
+import { useMessagesRealtime } from '@/features/messages/hooks';
 import { listenToNotificationTaps, scheduleDailyReminders } from '@/features/selfie/reminders';
 
 import { useTheme } from '@/theme/ThemeProvider';
 
 export default function AppLayout() {
   const { colors } = useTheme();
+  // Nouveaux messages en temps réel (badges, boîte de réception, conversation ouverte)
+  useMessagesRealtime();
 
   // Reprogramme les rappels des 7 prochains jours à chaque ouverture de l'app
   useEffect(() => {
@@ -31,6 +34,8 @@ export default function AppLayout() {
       <Stack.Screen name="selfie/waiting/[id]" options={{ gestureEnabled: true }} />
       <Stack.Screen name="match/[id]" options={{ presentation: 'modal' }} />
       <Stack.Screen name="q/[token]" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="chat/[userId]" />
+      <Stack.Screen name="blocked" />
       <Stack.Screen
         name="story/[userId]"
         options={{ presentation: 'fullScreenModal', animation: 'fade', contentStyle: { backgroundColor: '#000' } }}

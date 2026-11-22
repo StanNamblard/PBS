@@ -17,8 +17,8 @@ docs/          Architecture et guides
 | 1 | Projet, base de données, connexion, contrôle d'âge | ✅ testé sur iPhone |
 | 2 | Profil, publications, stories, follow, compte privé | ✅ testé |
 | 3 | Selfie du jour, matching, déblocage, rappels quotidiens | ✅ testé — notifications de match : avec le compte Apple Developer |
-| 4 | QR code (mon code + scanner) | ✅ à tester (voir « Mettre à jour vers la phase 4 ») |
-| 5 | Messagerie + boîte Demandes | ⏳ |
+| 4 | QR code (mon code + scanner) | ✅ testé |
+| 5 | Messagerie temps réel + boîte Demandes + blocage | ✅ à tester (voir « Mettre à jour vers la phase 5 ») — notifications de message : avec le compte Apple Developer |
 | 6 | Modération, signalement, RGPD, back-office | ⏳ |
 | 7 | Finitions, 10 langues, publication | ⏳ |
 
@@ -86,6 +86,8 @@ Pour **chacun** des fichiers ci-dessous, **dans cet ordre** : nouvelle requête 
 | 5 | [20261124000000_phase3_selfies.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261124000000_phase3_selfies.sql) | 3 |
 | 6 | [20261124000100_phase3_storage.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261124000100_phase3_storage.sql) | 3 |
 | 7 | [20261125000000_phase4_qr.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261125000000_phase4_qr.sql) | 4 |
+| 8 | [20261126000000_phase5_blocks.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261126000000_phase5_blocks.sql) | 5 |
+| 9 | [20261126000100_phase5_messaging.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261126000100_phase5_messaging.sql) | 5 |
 
 #### 3.5 Vérifier que tout est en place
 
@@ -516,6 +518,40 @@ npx expo start --tunnel -c
 7. Scanne ton **propre** code (photo de ton écran depuis un autre téléphone) → « C'est ton propre code 😄 ».
 
 > L'appareil photo normal de l'iPhone ne sait pas encore ouvrir BPS depuis un QR code (il faudra l'app installée et un nom de domaine, en phase 7) : scanne **depuis l'onglet QR de l'app**.
+
+---
+
+## Mettre à jour vers la phase 5 : la messagerie
+
+### A. Base de données (navigateur) — 2 fichiers, dans l'ordre
+
+Supabase → **SQL Editor** → pour chaque fichier : **+** (page vide) → **« Copy raw file »** sur GitHub → coller → **Run** → **« Success. No rows returned »**.
+
+1. [20261126000000_phase5_blocks.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261126000000_phase5_blocks.sql) (blocage)
+2. [20261126000100_phase5_messaging.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261126000100_phase5_messaging.sql) (messagerie)
+
+✅ Vérification : **Table Editor** affiche `blocks`, `conversations`, `conversation_members`, `messages` ; **Storage** affiche un dossier `dm`.
+
+### B. App (PowerShell)
+
+```bash
+cd ~/Desktop/PBS
+git checkout -- .
+git pull
+cd apps/mobile
+npm ci
+npx expo start --tunnel -c
+```
+
+### C. Tester (à deux)
+
+Voir le guide détaillé donné dans la conversation ; résumé :
+1. **Principale** : vous vous suivez mutuellement → profil de l'autre → **Message** → écrivez-vous : les messages arrivent en direct, « Vu » s'affiche sous ton dernier message, badge rouge sur l'onglet Messages.
+2. **Demandes** : l'un se désabonne de l'autre → celui qui suit encore écrit → chez l'autre, la conversation arrive dans **Demandes (1)**, sans badge, sans « Vu » ; un 2e message est refusé tant que la demande n'est pas acceptée.
+3. **Bascule automatique** : la personne qui a reçu la demande suit l'autre → la conversation passe toute seule dans **Principale**.
+4. **Accepter / Supprimer / Bloquer** depuis une demande ; **Profil → ⋯ → Bloquer / Signaler** ; **Paramètres → Comptes bloqués → Débloquer**.
+5. **Photos** : icône 🖼 à gauche du champ (une fois la conversation acceptée).
+6. **Selfies** : si vous avez eu un échange de selfies il y a moins de 24 h, il apparaît en haut de votre conversation.
 
 ---
 

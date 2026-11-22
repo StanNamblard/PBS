@@ -131,6 +131,7 @@ export default function SettingsScreen() {
       </Section>
 
       <Section title={t('settings.account')}>
+        <Button variant="secondary" label={t('settings.blockedAccounts')} onPress={() => router.push('/blocked')} />
         <Button variant="secondary" label={t('settings.exportData')} disabled onPress={() => {}} />
         <Button variant="secondary" label={t('settings.deleteAccount')} disabled onPress={() => {}} />
         <AppText variant="caption" muted center>

@@ -130,7 +130,30 @@
     "notificationsBlocked": "Notifications are turned off for BPS in your phone settings."
   },
   "messages": {
-    "title": "Messages"
+    "title": "Messages",
+    "primary": "Primary",
+    "requests": "Requests",
+    "emptyPrimary": "No conversations yet. To message someone, follow them and tap \"Message\" on their profile.",
+    "emptyRequests": "No requests. Messages from people you don't follow land here, without notifications.",
+    "photo": "📷 Photo",
+    "you": "You: ",
+    "placeholder": "Message…",
+    "send": "Send",
+    "seen": "Seen",
+    "requestBanner": "@{{username}} wants to message you. You don't follow them: they won't see whether you've read their message.",
+    "accept": "Accept",
+    "delete": "Delete",
+    "block": "Block",
+    "deleteConfirm": "Delete this conversation? It will only disappear on your side.",
+    "blockConfirm": "Block @{{username}}? You won't be able to see, follow or message each other, or be matched in the daily selfie. They won't be notified.",
+    "blocked": "@{{username}} is blocked.",
+    "mustFollow": "Follow @{{username}} to message them.",
+    "requestPending": "Message sent. @{{username}} needs to accept your request (or follow you) before you can write again.",
+    "noPhotoYet": "Photos will be possible once @{{username}} accepts your request.",
+    "message": "Message",
+    "matchCard": "Your selfie swap",
+    "firstMessage": "Say hi to @{{username}} 👋",
+    "unavailable": "This conversation is not available."
   },
   "qr": {
     "title": "QR code",
@@ -175,7 +198,10 @@
     "removeFollowerConfirm": "Remove @{{username}} from your followers? They won't be notified.",
     "emptyList": "Nobody yet.",
     "privateList": "This list is private.",
-    "followingButton": "Following ✓"
+    "followingButton": "Following ✓",
+    "more": "More options",
+    "blockUser": "Block",
+    "reportUser": "Report"
   },
   "settings": {
     "title": "Settings",
@@ -200,7 +226,10 @@
     "copied": "Copied!",
     "openProfile": "Open a profile by ID",
     "open": "Open",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "blockedAccounts": "Blocked accounts",
+    "noBlocked": "No blocked accounts.",
+    "unblock": "Unblock"
   },
   "setup": {
     "title": "Missing configuration",
@@ -227,7 +256,13 @@
     "cannot_follow_self": "You can't follow yourself",
     "upload": "Upload failed. Check your connection and try again.",
     "qr_invalid": "This QR code is no longer valid.",
-    "tooManyAttempts": "Too many attempts. Try again in a while."
+    "tooManyAttempts": "Too many attempts. Try again in a while.",
+    "must_follow": "You need to follow this person to message them.",
+    "request_pending": "Wait until your request is accepted.",
+    "no_media_in_requests": "No photos until your request is accepted.",
+    "empty_message": "Empty message.",
+    "cannot_message_self": "You can't message yourself.",
+    "cannot_block_self": "You can't block yourself."
   },
   "time": {
     "now": "just now",

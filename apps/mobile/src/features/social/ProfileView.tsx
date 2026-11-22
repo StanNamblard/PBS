@@ -1,13 +1,19 @@
 import Feather from '@expo/vector-icons/Feather';
 import { router } from 'expo-router';
+import { useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
 
+import { ActionMenu } from '@/components/ActionMenu';
 import { AppText } from '@/components/AppText';
 import { Avatar } from '@/components/Avatar';
 import { Header } from '@/components/Header';
 import { SmallButton } from '@/components/SmallButton';
+import { blockUser } from '@/features/messages/api';
 import { countryName, flagEmoji } from '@/features/onboarding/CountryPicker';
+import { ReportSheet } from '@/features/selfie/ReportSheet';
+import { confirm, notify } from '@/lib/dialogs';
 import { publicUrl } from '@/lib/media';
 import { useTheme } from '@/theme/ThemeProvider';
 import { radius, spacing } from '@/theme/tokens';
@@ -31,6 +37,9 @@ export function ProfileView({ userId, isTab }: Props) {
   const postsQuery = useUserPosts(userId, canView);
   const { data: requests = [] } = useFollowRequests();
   const { data: tray = [] } = useStoryTray();
+  const qc = useQueryClient();
+  const [reportOpen, setReportOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   if (profileQuery.isPending) {
     return <ActivityIndicator style={styles.loader} color={colors.primary} />;
@@ -47,6 +56,22 @@ export function ProfileView({ userId, isTab }: Props) {
   }
 
   const posts = postsQuery.data?.pages.flat() ?? [];
+
+  // Menu « ⋯ » d'un autre profil : signaler ou bloquer
+  const block = async () => {
+    const ok = await confirm({
+      title: t('messages.blockConfirm', { username: profile.username }),
+      confirmText: t('messages.block'),
+      cancelText: t('common.cancel'),
+      destructive: true,
+    });
+    if (!ok) return;
+    await blockUser(profile.id);
+    await qc.invalidateQueries();
+    notify(t('messages.blocked', { username: profile.username }));
+    router.back();
+  };
+
   const hasStory = tray.some((i) => i.author_id === userId);
   const openList = (kind: 'followers' | 'following') => router.push(`/user/${userId}/${kind}`);
 
@@ -86,7 +111,13 @@ export function ProfileView({ userId, isTab }: Props) {
         {profile.is_me ? (
           <SmallButton flex label={t('profile.edit')} onPress={() => router.push('/edit-profile')} />
         ) : (
-          <FollowButton flex userId={profile.id} username={profile.username} status={profile.i_follow} followsMe={profile.follows_me} />
+          <>
+            <FollowButton flex userId={profile.id} username={profile.username} status={profile.i_follow} followsMe={profile.follows_me} />
+            {/* On ne peut écrire qu'aux personnes qu'on suit */}
+            {profile.i_follow === 'active' ? (
+              <SmallButton flex label={t('messages.message')} onPress={() => router.push(`/chat/${profile.id}`)} />
+            ) : null}
+          </>
         )}
       </View>
 
@@ -126,9 +157,35 @@ export function ProfileView({ userId, isTab }: Props) {
             <Pressable hitSlop={12} accessibilityLabel={t('profile.settings')} onPress={() => router.push('/settings')}>
               <Feather name="settings" size={22} color={colors.text} />
             </Pressable>
-          ) : null
+          ) : (
+            <Pressable hitSlop={12} accessibilityLabel={t('profile.more')} onPress={() => setMenuOpen(true)}>
+              <Feather name="more-horizontal" size={24} color={colors.text} />
+            </Pressable>
+          )
         }
       />
+      {!profile.is_me ? (
+        <ActionMenu
+          visible={menuOpen}
+          title={`@${profile.username}`}
+          cancelLabel={t('common.cancel')}
+          onClose={() => setMenuOpen(false)}
+          items={[
+            { label: t('profile.reportUser'), onPress: () => setReportOpen(true) },
+            { label: t('profile.blockUser'), destructive: true, onPress: () => void block() },
+          ]}
+        />
+      ) : null}
+      {!profile.is_me ? (
+        <ReportSheet
+          visible={reportOpen}
+          onClose={() => setReportOpen(false)}
+          targetId={profile.id}
+          username={profile.username}
+          context="profile"
+          contextId={null}
+        />
+      ) : null}
       <FlatList
         data={canView && posts.length > 0 ? [posts] : []}
         keyExtractor={() => 'grid'}
