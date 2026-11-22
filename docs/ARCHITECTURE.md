@@ -20,6 +20,14 @@
 | 11 | Appareil de test | **iPhone** (Expo Go jusqu'à la phase 2, build de développement à partir de la phase 3) |
 | 12 | Budget | ~**100 €/mois** au départ |
 
+Choix faits en phase 6 :
+- **Modération** : Edge Function `moderate-image` (Sightengine : nudity-2.1, gore-2.0, offensive-2.0, faces pour les selfies) → `moderation_results` (approved / review / rejected). Des **déclencheurs** sur post_media, stories, selfie_submissions, messages et profiles (avatar) appliquent le verdict côté serveur. `review` : publication/story « pending » (file admin) ; refus pour selfie, message, avatar. Interrupteur `app_config.moderation_enforced` (false par défaut).
+- **Back-office dans l'app** : table `admins`, fonctions `admin_*` vérifiant `is_admin()` côté serveur ; actions tracées (`moderation_actions`) ; motif envoyé à l'utilisateur (DSA). Suspension automatique : 3 signaleurs distincts (nudité / mineur / violence) ou 5 tous motifs en 24 h.
+- **Sourdine** (`mutes`) : retire du fil et des stories sans désabonner.
+- **RGPD** : `export_my_data()` (JSON + liens 7 jours) ; suppression = statut `deleted` puis effacement définitif à J+30 par `purge-media`. Se reconnecter avant annule.
+- **Légal** : brouillons CGU / confidentialité / règles (FR, EN) dans `apps/mobile/src/legal`.
+- **À prévoir avant le lancement public** : détection CSAM par empreintes (Thorn Safer / PhotoDNA) et procédure de signalement aux autorités ; vérification d'âge renforcée.
+
 Choix faits en phase 5 :
 - **Dossier par participant** (`conversation_members.folder`) plutôt qu'un drapeau sur chaque message : `primary` si je suis l'autre ou si j'ai accepté, sinon `requests`. Un déclencheur sur `follows` fait basculer la conversation en principale dès que je suis l'autre (définitif via `accepted_at`).
 - **Droit d'écrire** : suivre l'autre, ou avoir accepté sa conversation (pour pouvoir répondre). Demande non acceptée : 1 message texte max, pas de photo, pas d'accusé de lecture. 30 messages/min max.

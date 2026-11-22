@@ -18,8 +18,8 @@ docs/          Architecture et guides
 | 2 | Profil, publications, stories, follow, compte privé | ✅ testé |
 | 3 | Selfie du jour, matching, déblocage, rappels quotidiens | ✅ testé — notifications de match : avec le compte Apple Developer |
 | 4 | QR code (mon code + scanner) | ✅ testé |
-| 5 | Messagerie temps réel + boîte Demandes + blocage | ✅ à tester (voir « Mettre à jour vers la phase 5 ») — notifications de message : avec le compte Apple Developer |
-| 6 | Modération, signalement, RGPD, back-office | ⏳ |
+| 5 | Messagerie temps réel + boîte Demandes + blocage | ✅ testé — notifications de message : avec le compte Apple Developer |
+| 6 | Modération auto (Sightengine), signalements, back-office admin, sourdine, export / suppression du compte, brouillons légaux | ✅ à tester (voir « Mettre à jour vers la phase 6 ») |
 | 7 | Finitions, 10 langues, publication | ⏳ |
 
 ---
@@ -88,6 +88,8 @@ Pour **chacun** des fichiers ci-dessous, **dans cet ordre** : nouvelle requête 
 | 7 | [20261125000000_phase4_qr.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261125000000_phase4_qr.sql) | 4 |
 | 8 | [20261126000000_phase5_blocks.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261126000000_phase5_blocks.sql) | 5 |
 | 9 | [20261126000100_phase5_messaging.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261126000100_phase5_messaging.sql) | 5 |
+| 10 | [20261127000000_phase6_moderation.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261127000000_phase6_moderation.sql) | 6 |
+| 11 | [20261127000100_phase6_privacy.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261127000100_phase6_privacy.sql) | 6 |
 
 #### 3.5 Vérifier que tout est en place
 
@@ -552,6 +554,44 @@ Voir le guide détaillé donné dans la conversation ; résumé :
 4. **Accepter / Supprimer / Bloquer** depuis une demande ; **Profil → ⋯ → Bloquer / Signaler** ; **Paramètres → Comptes bloqués → Débloquer**.
 5. **Photos** : icône 🖼 à gauche du champ (une fois la conversation acceptée).
 6. **Selfies** : si vous avez eu un échange de selfies il y a moins de 24 h, il apparaît en haut de votre conversation.
+
+---
+
+## Mettre à jour vers la phase 6 : modération, back-office, RGPD
+
+### A. Base de données (navigateur) — 2 fichiers, dans l'ordre
+1. [20261127000000_phase6_moderation.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261127000000_phase6_moderation.sql)
+2. [20261127000100_phase6_privacy.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261127000100_phase6_privacy.sql)
+
+### B. Te nommer administrateur (navigateur)
+SQL Editor → page vide → colle (en remplaçant `ton_pseudo`) → **Run** :
+```sql
+insert into public.admins (user_id) select id from public.profiles where username = 'ton_pseudo';
+```
+
+### C. Fonctions serveur (navigateur)
+1. **Mettre à jour `purge-media`** (efface aussi les comptes supprimés depuis 30 jours) : Edge Functions → `purge-media` → **Code** → remplace tout par [purge-media/index.ts](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/functions/purge-media/index.ts) → **Deploy**.
+2. **Créer `moderate-image`** : Edge Functions → **Deploy a new function** → **Via Editor** → nom `moderate-image` → colle [moderate-image/index.ts](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/functions/moderate-image/index.ts) → **Deploy** (laisse « Verify JWT » **activé** pour celle-ci).
+
+### D. Sightengine (navigateur)
+1. Crée un compte sur https://sightengine.com (plan gratuit).
+2. Tableau de bord Sightengine → **API keys** : note **API user** et **API secret**.
+3. Supabase → **Edge Functions** → **Secrets** → ajoute `SIGHTENGINE_API_USER` et `SIGHTENGINE_API_SECRET`.
+4. **Activer la modération obligatoire** (après C et D) — SQL Editor :
+```sql
+update public.app_config set value = 'true' where key = 'moderation_enforced';
+```
+> Avant cette ligne, rien n'est bloqué faute d'analyse : l'app reste utilisable pendant la configuration.
+
+### E. App (PowerShell)
+```bash
+cd ~/Desktop/PBS
+git checkout -- .
+git pull
+cd apps/mobile
+npm ci
+npx expo start --tunnel -c
+```
 
 ---
 
