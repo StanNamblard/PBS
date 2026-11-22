@@ -121,6 +121,8 @@ Si tu as déjà fait la méthode du navigateur, n'utilise pas celle-ci (elle ess
 
 ### 4. Configurer la connexion par email
 
+> 💶 **Cette étape est gratuite** (simples réglages, inclus dans le plan Free) et **obligatoire** : sans elle, l'email reçu contient un lien au lieu d'un code à 6 chiffres, et tu ne pourras pas te connecter dans l'app. Seul le service d'envoi pour de nombreux testeurs (plus tard) pourra être payant.
+
 Dans le tableau de bord Supabase :
 
 1. **Authentication → Sign In / Providers → Email** : vérifie que *Email* est activé. Mets *Email OTP Expiration* à `600` secondes.
@@ -130,24 +132,98 @@ Dans le tableau de bord Supabase :
 
 ### 5. Récupérer le code et le relier à Supabase
 
-1. Dans un terminal, récupère le code du projet sur ton ordinateur (une seule fois) :
+But de l'étape : avoir le dossier du projet sur ton ordinateur, et y créer un petit fichier `.env` qui contient l'adresse de ta base Supabase.
+Il y a 3 parties : **5.1** récupérer le code, **5.2** copier 2 valeurs dans Supabase, **5.3** les coller dans le fichier `.env`.
 
+#### 5.1 Récupérer le code sur ton ordinateur
+
+1. **Ouvre un terminal** :
+   - **Mac** : appuie sur **Cmd + Espace**, tape `Terminal`, appuie sur Entrée.
+   - **Windows** : clique sur Démarrer, tape `PowerShell`, appuie sur Entrée.
+2. **Va sur ton Bureau** (le projet y sera facile à retrouver). Tape cette ligne puis Entrée :
+   ```bash
+   cd ~/Desktop
+   ```
+   (Sur un Windows en français, si erreur : `cd ~/Bureau`.)
+3. **Télécharge le projet** : tape (ou copie-colle) cette ligne puis Entrée :
    ```bash
    git clone https://github.com/StanNamblard/PBS.git
+   ```
+   ✅ Résultat attendu : quelques lignes `Cloning into 'PBS'... done.` et un dossier **PBS** apparaît sur ton Bureau.
+4. **Entre dans le dossier et choisis la bonne version** : tape ces 2 lignes, une par une, chacune suivie d'Entrée :
+   ```bash
    cd PBS
    git checkout claude/social-app-architecture-lb7tbk
    ```
+   ✅ Résultat attendu : `Switched to branch 'claude/social-app-architecture-lb7tbk'` (ou `Already on ...`).
+5. **Vérifie** : tape `ls apps/mobile` puis Entrée. Tu dois voir notamment `app.json`, `package.json` et `src`.
 
-2. Supabase → **Project Settings → API Keys** : copie l'**URL du projet** et la clé **publishable** (commence par `sb_publishable_`, ou la clé « anon » sur les anciens projets).
-3. Dans le dossier `PBS/apps/mobile`, copie le fichier `.env.example` en `.env` et colle ces deux valeurs.
-   *Ne mets JAMAIS la clé « secret » / « service_role » dans ce fichier.*
+**Ça bloque ?**
+
+| Message | Solution |
+|---|---|
+| `git: command not found` / `git n'est pas reconnu` | Git n'est pas installé. **Mac** : une fenêtre propose d'installer les « outils de ligne de commande » → clique sur *Installer*, attends, puis recommence. **Windows** : installe Git depuis https://git-scm.com/downloads (options par défaut), **ferme et rouvre** PowerShell, recommence. |
+| On te demande `Username` / `Password` | Le projet est privé et GitHub n'accepte plus les mots de passe ici. Utilise la **méthode sans Git** ci-dessous. |
+| `destination path 'PBS' already exists` | Tu l'as déjà téléchargé. Tape `cd PBS` et continue au point 4. |
+| `pathspec ... did not match` au `git checkout` | Tape `git fetch origin` puis refais la commande `git checkout ...`. |
+
+**Méthode sans Git (téléchargement ZIP)** : connecte-toi sur github.com, ouvre
+https://github.com/StanNamblard/PBS/tree/claude/social-app-architecture-lb7tbk
+→ bouton vert **Code** → **Download ZIP**. Double-clique sur le fichier téléchargé pour le décompresser, renomme le dossier obtenu en **PBS** et place-le sur ton **Bureau**. Puis dans le terminal : `cd ~/Desktop/PBS`.
+(Inconvénient : à chaque nouvelle phase, il faudra retélécharger le ZIP.)
+
+#### 5.2 Copier l'URL et la clé dans Supabase
+
+Garde le terminal ouvert, et va dans ton navigateur sur https://supabase.com/dashboard → projet **bps**.
+
+1. **L'URL du projet** : clique sur le bouton **Connect** (en haut de la page du projet). Dans la fenêtre, cherche **Project URL** : une adresse de la forme `https://abcdefghijklmnopqrst.supabase.co`. Copie-la et colle-la temporairement dans une note.
+   *(Autre endroit : roue dentée **Project Settings** en bas à gauche → **Data API** → *Project URL*.)*
+2. **La clé publique** : roue dentée **Project Settings** → **API Keys**. Copie la clé **Publishable key** (elle commence par `sb_publishable_`). Colle-la aussi dans ta note.
+   *(Si tu ne vois que des clés « legacy » : prends celle nommée **anon** / **public**, une longue suite commençant par `eyJ`.)*
+
+> 🔒 **Ne copie JAMAIS** la clé **secret** (`sb_secret_...`) ni **service_role** : elles donnent tous les droits sur ta base. Seule la clé *publishable* / *anon* va dans l'app.
+
+#### 5.3 Créer le fichier `.env`
+
+Ce fichier contient tes 2 valeurs. Il commence par un point : il est donc **invisible** dans le Finder / l'Explorateur, c'est pourquoi on le crée depuis le terminal.
+
+1. Dans le terminal (tu dois être dans le dossier `PBS`), tape ces lignes une par une :
+
+   **Mac :**
+   ```bash
+   cd apps/mobile
+   cp .env.example .env
+   open -e .env
+   ```
+   **Windows :**
+   ```bash
+   cd apps/mobile
+   copy .env.example .env
+   notepad .env
+   ```
+2. Un éditeur de texte s'ouvre (TextEdit ou Bloc-notes) avec ce contenu :
+   ```
+   EXPO_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxxx.supabase.co
+   EXPO_PUBLIC_SUPABASE_KEY=sb_publishable_xxxxxxxxxxxxxxxx
+   ```
+3. Remplace **tout ce qui est après le `=`** par tes valeurs, ce qui donne par exemple :
+   ```
+   EXPO_PUBLIC_SUPABASE_URL=https://abcdefghijklmnopqrst.supabase.co
+   EXPO_PUBLIC_SUPABASE_KEY=sb_publishable_AbC123...
+   ```
+   ⚠️ Pas d'espace autour du `=`, pas de guillemets, pas de `/` à la fin de l'URL.
+4. Enregistre (**Cmd + S** / **Ctrl + S**) et ferme l'éditeur.
+5. **Vérifie** : dans le terminal, tape `cat .env` (Mac) ou `type .env` (Windows) puis Entrée : tes deux lignes doivent s'afficher.
+
+✅ Étape 5 terminée. **Garde le terminal ouvert** : tu es déjà dans le bon dossier (`PBS/apps/mobile`) pour l'étape 6.
+
+> Si l'app affiche plus tard l'écran **« Configuration manquante »**, c'est que le fichier `.env` est mal rempli ou mal placé : il doit être dans `PBS/apps/mobile/` et s'appeler exactement `.env` (pas `.env.txt`). Après l'avoir corrigé, arrête l'app avec **Ctrl + C** dans le terminal et relance `npx expo start`.
 
 ### 6. Lancer l'app
 
-Dans le terminal, depuis le dossier `PBS` :
+Dans le terminal, depuis le dossier `PBS/apps/mobile` (là où l'étape 5 t'a laissé ; sinon : `cd ~/Desktop/PBS/apps/mobile`) :
 
 ```bash
-cd apps/mobile
 npm install          # la première fois seulement (quelques minutes)
 npx expo start
 ```
