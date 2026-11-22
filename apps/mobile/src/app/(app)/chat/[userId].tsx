@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { ActionMenu } from '@/components/ActionMenu';
 import { AppText } from '@/components/AppText';
 import { Avatar } from '@/components/Avatar';
 import { SmallButton } from '@/components/SmallButton';
@@ -23,6 +24,7 @@ import {
 } from '@/features/messages/api';
 import { msgKeys, useConversation, useMessages } from '@/features/messages/hooks';
 import { formatTime, useRecentMatches } from '@/features/selfie/hooks';
+import { ReportSheet } from '@/features/selfie/ReportSheet';
 import { confirm, notify } from '@/lib/dialogs';
 import { serverErrorKey } from '@/lib/errors';
 import { publicUrl, useSignedUrls } from '@/lib/media';
@@ -42,6 +44,8 @@ export default function ChatScreen() {
   const messages = useMemo(() => messagesQuery.data?.pages.flat() ?? [], [messagesQuery.data]);
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
   // Photos des messages (bucket privé « dm »)
   const mediaPaths = messages.map((m) => m.media_path).filter((p): p is string => !!p);
@@ -153,6 +157,26 @@ export default function ChatScreen() {
         title={info.other_username}
         avatar={info.other_avatar_path}
         onPress={() => router.push(`/user/${info.other_id}`)}
+        onMore={() => setMenuOpen(true)}
+      />
+      <ActionMenu
+        visible={menuOpen}
+        title={`@${info.other_username}`}
+        cancelLabel={t('common.cancel')}
+        onClose={() => setMenuOpen(false)}
+        items={[
+          ...(info.conversation_id ? [{ label: t('messages.deleteConversation'), destructive: true, onPress: () => void remove() }] : []),
+          { label: t('profile.reportUser'), onPress: () => setReportOpen(true) },
+          { label: t('profile.blockUser'), destructive: true, onPress: () => void block() },
+        ]}
+      />
+      <ReportSheet
+        visible={reportOpen}
+        onClose={() => setReportOpen(false)}
+        targetId={info.other_id}
+        username={info.other_username}
+        context="profile"
+        contextId={null}
       />
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <FlatList
@@ -244,7 +268,7 @@ function shouldShowTime(messages: Message[], index: number): boolean {
   return new Date(current.created_at).getTime() - new Date(older.created_at).getTime() > 10 * 60 * 1000;
 }
 
-function TopBar({ title, avatar, onPress }: { title: string; avatar?: string | null; onPress?: () => void }) {
+function TopBar({ title, avatar, onPress, onMore }: { title: string; avatar?: string | null; onPress?: () => void; onMore?: () => void }) {
   const { colors } = useTheme();
   return (
     <View style={[styles.topBar, { borderBottomColor: colors.border }]}>
@@ -257,6 +281,11 @@ function TopBar({ title, avatar, onPress }: { title: string; avatar?: string | n
           {title}
         </AppText>
       </Pressable>
+      {onMore ? (
+        <Pressable hitSlop={12} onPress={onMore} accessibilityLabel="more">
+          <Feather name="more-horizontal" size={24} color={colors.text} />
+        </Pressable>
+      ) : null}
     </View>
   );
 }

@@ -153,7 +153,9 @@
     "message": "Message",
     "matchCard": "Votre échange de selfies",
     "firstMessage": "Dis bonjour à @{{username}} 👋",
-    "unavailable": "Cette conversation n'est pas disponible."
+    "unavailable": "Cette conversation n'est pas disponible.",
+    "deleteConversation": "Supprimer la conversation",
+    "longPressHint": "Appui long sur une conversation pour la supprimer."
   },
   "qr": {
     "title": "QR code",

@@ -5,9 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { ActionMenu } from '@/components/ActionMenu';
 import { AppText } from '@/components/AppText';
 import { Avatar } from '@/components/Avatar';
-import type { Folder, InboxItem } from '@/features/messages/api';
+import { deleteConversation, type Folder, type InboxItem } from '@/features/messages/api';
+import { confirm } from '@/lib/dialogs';
 import { useInbox, useInboxCounts } from '@/features/messages/hooks';
 import { publicUrl } from '@/lib/media';
 import { timeAgo } from '@/lib/time';
@@ -22,6 +24,14 @@ export default function MessagesScreen() {
   const [folder, setFolder] = useState<Folder>('primary');
   const inbox = useInbox(folder);
   const { data: counts } = useInboxCounts();
+  const [selected, setSelected] = useState<InboxItem | null>(null);
+
+  const remove = async (item: InboxItem) => {
+    const ok = await confirm({ title: t('messages.deleteConfirm'), confirmText: t('messages.delete'), cancelText: t('common.cancel'), destructive: true });
+    if (!ok) return;
+    await deleteConversation(item.conversation_id);
+    await qc.invalidateQueries({ queryKey: ['inbox'] });
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -53,8 +63,15 @@ export default function MessagesScreen() {
       <FlatList
         data={inbox.data ?? []}
         keyExtractor={(i) => i.conversation_id}
-        renderItem={({ item }) => <InboxRow item={item} />}
+        renderItem={({ item }) => <InboxRow item={item} onLongPress={() => setSelected(item)} />}
         refreshControl={<RefreshControl tintColor={colors.primary} refreshing={inbox.isRefetching} onRefresh={() => void inbox.refetch()} />}
+        ListFooterComponent={
+          inbox.data?.length ? (
+            <AppText variant="caption" muted center style={styles.hint}>
+              {t('messages.longPressHint')}
+            </AppText>
+          ) : undefined
+        }
         ListEmptyComponent={
           inbox.isPending ? (
             <ActivityIndicator color={colors.primary} style={styles.empty} />
@@ -65,16 +82,23 @@ export default function MessagesScreen() {
           )
         }
       />
+      <ActionMenu
+        visible={!!selected}
+        title={selected ? `@${selected.other_username}` : undefined}
+        cancelLabel={t('common.cancel')}
+        onClose={() => setSelected(null)}
+        items={selected ? [{ label: t('messages.deleteConversation'), destructive: true, onPress: () => void remove(selected) }] : []}
+      />
     </SafeAreaView>
   );
 }
 
-function InboxRow({ item }: { item: InboxItem }) {
+function InboxRow({ item, onLongPress }: { item: InboxItem; onLongPress: () => void }) {
   const { t, i18n } = useTranslation();
   const { colors } = useTheme();
   const preview = item.last_has_media && !item.last_body ? t('messages.photo') : (item.last_body ?? '');
   return (
-    <Pressable style={styles.row} onPress={() => router.push(`/chat/${item.other_id}`)}>
+    <Pressable style={styles.row} onPress={() => router.push(`/chat/${item.other_id}`)} onLongPress={onLongPress} delayLongPress={350}>
       <Avatar uri={publicUrl(item.other_avatar_path)} name={item.other_username} size={54} />
       <View style={styles.flex}>
         <AppText variant={item.unread ? 'bodyStrong' : 'body'} numberOfLines={1}>
@@ -98,4 +122,5 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingHorizontal: spacing.lg, paddingVertical: spacing.sm },
   dot: { width: 10, height: 10, borderRadius: 5 },
   empty: { padding: spacing.xl },
+  hint: { padding: spacing.lg },
 });
