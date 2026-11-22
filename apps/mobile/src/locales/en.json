@@ -95,8 +95,39 @@
   },
   "selfie": {
     "title": "Daily selfie",
-    "cta": "Send a selfie",
-    "body": "Take a selfie: it will be swapped with a stranger's, somewhere in the world."
+    "cta": "Take my selfie",
+    "body": "Take a selfie: it'll be swapped with a stranger's, somewhere in the world. Both are revealed at the same time.",
+    "nextWave": "Next wave: {{when}}",
+    "today": "today at {{time}}",
+    "tomorrow": "tomorrow at {{time}}",
+    "resume": "Back to my pending selfie",
+    "recent": "Your swaps (24h)",
+    "noRecent": "No swaps yet. Your turn!",
+    "expiresAt": "Visible until {{time}}",
+    "reminderTitle": "📸 Selfie time!",
+    "reminderBody": "A stranger is waiting for you somewhere in the world.",
+    "frontOnly": "Front camera only, no filters: that's the game.",
+    "cameraPermissionTitle": "Camera access",
+    "cameraPermissionBody": "BPS needs your front camera to take your selfie.",
+    "allowCamera": "Allow camera",
+    "openSettings": "Open settings",
+    "retake": "Retake",
+    "send": "Send",
+    "sending": "Sending…",
+    "waitingTitle": "Finding someone…",
+    "waitingBody": "Somewhere in the world, someone is sending their selfie. Both photos will be revealed at the same time.",
+    "waitingLeave": "You can leave this screen: your selfie stays in the queue.",
+    "timeLeft": "{{time}} left in the queue",
+    "cancel": "Cancel my selfie",
+    "cancelConfirm": "Remove your selfie from the queue?",
+    "expiredTitle": "Nobody this time",
+    "expiredBody": "No selfie arrived within 30 minutes. Try again, especially during the daily wave!",
+    "tryAgain": "Try again",
+    "rate_limited": "Easy! Too many selfies in one hour, try again a bit later.",
+    "selfie_already_pending": "You already have a selfie waiting.",
+    "dailyReminder": "Daily wave reminder",
+    "dailyReminderHint": "One notification a day, at the same time for your whole part of the world.",
+    "notificationsBlocked": "Notifications are turned off for BPS in your phone settings."
   },
   "messages": {
     "title": "Messages"
@@ -150,7 +181,8 @@
     "copy": "Copy",
     "copied": "Copied!",
     "openProfile": "Open a profile by ID",
-    "open": "Open"
+    "open": "Open",
+    "notifications": "Notifications"
   },
   "setup": {
     "title": "Missing configuration",
@@ -221,5 +253,35 @@
   "editProfile": {
     "title": "Edit profile",
     "saved": "Profile saved"
+  },
+  "match": {
+    "countdown": "Revealing…",
+    "itsAMatch": "Swap complete!",
+    "with": "with",
+    "follow": "Follow",
+    "pass": "Pass",
+    "followed": "You follow @{{username}}",
+    "requested": "Request sent to @{{username}}",
+    "passed": "You passed",
+    "followsYou": "@{{username}} follows you",
+    "viewProfile": "View profile",
+    "report": "Report",
+    "again": "One more!",
+    "expired": "This swap is over 24h old: the photos have been deleted.",
+    "notFound": "Swap not found.",
+    "you": "You"
+  },
+  "report": {
+    "title": "Report @{{username}}",
+    "subtitle": "Why? Your report is anonymous.",
+    "nudity": "Nudity or sexual content",
+    "minor": "Seems to be under 18",
+    "harassment": "Harassment or insults",
+    "hate": "Hate or discrimination",
+    "violence": "Violence or shocking content",
+    "spam": "Spam or scam",
+    "fake": "Fake account / impersonation",
+    "other": "Other",
+    "thanks": "Thanks. Our team will review this report."
   }
 }

@@ -20,6 +20,14 @@
 | 11 | Appareil de test | **iPhone** (Expo Go jusqu'à la phase 2, build de développement à partir de la phase 3) |
 | 12 | Budget | ~**100 €/mois** au départ |
 
+Choix faits en phase 3 :
+- **Matching** dans Postgres (`_try_match`) : verrou de la ligne + `FOR UPDATE SKIP LOCKED` sur le candidat → jamais deux matchs pour un même selfie, même sous forte concurrence (test : 40 envois simultanés → 20 matchs, 0 doublon). Tri : pays différent d'abord, puis le plus ancien. Préférence « même langue » relâchée après 2 min. Pas de re-match avant 30 jours (`match_pairs`). 30 selfies max / heure.
+- **Courses simultanées** : si deux selfies arrivent exactement au même instant, aucun ne voit l'autre ; l'interrogation `poll_selfie` (toutes les 3 s pendant l'attente) relance le matching et les apparie.
+- **Verrou** : bucket `selfies` privé ; lecture du fichier d'un autre uniquement via un match débloqué de moins de 24 h. Avant la révélation, l'app n'affiche aucun dérivé de la photo.
+- **Vagues** : calcul déterministe côté téléphone (`waves.ts`) → rappels locaux programmés 7 jours à l'avance (fonctionne sans serveur de push). Régions Amériques / EMEA / APAC, 11 h 30–20 h 30 heure de référence, repli 19 h locale.
+- **Purge** : Edge Function `purge-media` planifiée chaque heure (selfies expirés / > 24 h, stories expirées).
+- **Reste à faire** : push « nouveau match » (build de dev + Apple Developer), modération automatique avant mise en file (phase 6), blocage dans le matching (phase 6).
+
 Choix faits en phase 2 :
 - **Anti-aspiration des profils** : la lecture directe de la table `profiles` est limitée à soi-même et à ses relations (follow dans un sens ou l'autre). Les autres profils ne s'ouvrent que par identifiant via `get_profile()` (match, QR, listes). Aucune recherche par pseudo n'existe.
 - **Compte privé** : un follow devient une demande ; contenus et listes d'abonnés masqués aux non-abonnés ; repasser en public accepte toutes les demandes en attente.

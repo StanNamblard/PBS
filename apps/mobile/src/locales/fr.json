@@ -95,8 +95,39 @@
   },
   "selfie": {
     "title": "Selfie du jour",
-    "cta": "Envoyer un selfie",
-    "body": "Prends un selfie, il sera échangé avec celui d'un inconnu quelque part dans le monde."
+    "cta": "Prendre mon selfie",
+    "body": "Prends un selfie : il sera échangé avec celui d'un inconnu, quelque part dans le monde. Les deux se révèlent en même temps.",
+    "nextWave": "Prochaine vague : {{when}}",
+    "today": "aujourd'hui à {{time}}",
+    "tomorrow": "demain à {{time}}",
+    "resume": "Reprendre mon selfie en attente",
+    "recent": "Tes échanges (24 h)",
+    "noRecent": "Aucun échange pour l'instant. À toi de jouer !",
+    "expiresAt": "Visible jusqu'à {{time}}",
+    "reminderTitle": "📸 C'est l'heure du selfie !",
+    "reminderBody": "Un inconnu t'attend quelque part dans le monde.",
+    "frontOnly": "Caméra frontale uniquement, pas de retouche : c'est ça, le jeu.",
+    "cameraPermissionTitle": "Accès à la caméra",
+    "cameraPermissionBody": "BPS a besoin de ta caméra frontale pour prendre ton selfie.",
+    "allowCamera": "Autoriser la caméra",
+    "openSettings": "Ouvrir les réglages",
+    "retake": "Reprendre",
+    "send": "Envoyer",
+    "sending": "Envoi…",
+    "waitingTitle": "On cherche quelqu'un…",
+    "waitingBody": "Quelque part dans le monde, quelqu'un est en train d'envoyer son selfie. Les deux photos se révéleront en même temps.",
+    "waitingLeave": "Tu peux quitter cet écran : ton selfie reste dans la file.",
+    "timeLeft": "Encore {{time}} dans la file",
+    "cancel": "Annuler mon selfie",
+    "cancelConfirm": "Retirer ton selfie de la file d'attente ?",
+    "expiredTitle": "Personne cette fois-ci",
+    "expiredBody": "Aucun selfie n'est arrivé pendant 30 minutes. Réessaie, surtout pendant la vague du jour !",
+    "tryAgain": "Réessayer",
+    "rate_limited": "Doucement ! Trop de selfies en une heure, réessaie un peu plus tard.",
+    "selfie_already_pending": "Tu as déjà un selfie en attente.",
+    "dailyReminder": "Rappel de la vague quotidienne",
+    "dailyReminderHint": "Une notification par jour, à la même heure pour tout ton coin du monde.",
+    "notificationsBlocked": "Les notifications sont désactivées pour BPS dans les réglages de ton téléphone."
   },
   "messages": {
     "title": "Messages"
@@ -150,7 +181,8 @@
     "copy": "Copier",
     "copied": "Copié !",
     "openProfile": "Ouvrir un profil par identifiant",
-    "open": "Ouvrir"
+    "open": "Ouvrir",
+    "notifications": "Notifications"
   },
   "setup": {
     "title": "Configuration manquante",
@@ -221,5 +253,35 @@
   "editProfile": {
     "title": "Modifier le profil",
     "saved": "Profil enregistré"
+  },
+  "match": {
+    "countdown": "Révélation…",
+    "itsAMatch": "Échange réussi !",
+    "with": "avec",
+    "follow": "Suivre",
+    "pass": "Passer",
+    "followed": "Tu suis @{{username}}",
+    "requested": "Demande envoyée à @{{username}}",
+    "passed": "Tu as passé",
+    "followsYou": "@{{username}} te suit",
+    "viewProfile": "Voir le profil",
+    "report": "Signaler",
+    "again": "Encore un !",
+    "expired": "Cet échange a plus de 24 h : les photos ont été effacées.",
+    "notFound": "Échange introuvable.",
+    "you": "Toi"
+  },
+  "report": {
+    "title": "Signaler @{{username}}",
+    "subtitle": "Pourquoi ? Ton signalement est anonyme.",
+    "nudity": "Nudité ou contenu sexuel",
+    "minor": "Semble avoir moins de 18 ans",
+    "harassment": "Harcèlement ou insulte",
+    "hate": "Haine ou discrimination",
+    "violence": "Violence ou contenu choquant",
+    "spam": "Spam ou arnaque",
+    "fake": "Faux compte / usurpation",
+    "other": "Autre",
+    "thanks": "Merci. Notre équipe va examiner ce signalement."
   }
 }

@@ -3,7 +3,7 @@ import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 
 import { supabase } from './supabase';
 
-export type Bucket = 'avatars' | 'posts' | 'stories';
+export type Bucket = 'avatars' | 'posts' | 'stories' | 'selfies';
 
 export interface PreparedImage {
   uri: string;

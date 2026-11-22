@@ -18,6 +18,8 @@ const KNOWN_CODES = [
   'caption_too_long',
   'user_not_found',
   'cannot_follow_self',
+  'rate_limited',
+  'selfie_already_pending',
 ] as const;
 
 export type ServerErrorCode = (typeof KNOWN_CODES)[number];
@@ -28,5 +30,6 @@ export function serverErrorKey(error: unknown): string {
       ? String((error as { message: unknown }).message)
       : String(error);
   const code = KNOWN_CODES.find((c) => message.includes(c));
+  if (code === 'rate_limited' || code === 'selfie_already_pending') return `selfie.${code}`;
   return code ? `errors.${code}` : 'errors.generic';
 }

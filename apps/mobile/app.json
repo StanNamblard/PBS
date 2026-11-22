@@ -49,6 +49,20 @@
           "photosPermission": "BPS a besoin d'accéder à tes photos pour choisir ta photo de profil.",
           "cameraPermission": "BPS a besoin de la caméra pour prendre tes selfies."
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "BPS a besoin de la caméra frontale pour prendre tes selfies.",
+          "recordAudioAndroid": false,
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#FF4D2E"
+        }
       ]
     ],
     "experiments": {

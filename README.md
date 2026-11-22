@@ -15,8 +15,8 @@ docs/          Architecture et guides
 |---|---|---|
 | 0 | Architecture | ✅ |
 | 1 | Projet, base de données, connexion, contrôle d'âge | ✅ testé sur iPhone |
-| 2 | Profil, publications, stories, follow, compte privé | ✅ à tester (voir « Mettre à jour vers la phase 2 ») |
-| 3 | Selfie du jour, matching, déblocage, notifications | ⏳ |
+| 2 | Profil, publications, stories, follow, compte privé | ✅ testé |
+| 3 | Selfie du jour, matching, déblocage, rappels quotidiens | ✅ à tester (voir « Mettre à jour vers la phase 3 ») — notifications de match : avec le compte Apple Developer |
 | 4 | QR code | ⏳ |
 | 5 | Messagerie + boîte Demandes | ⏳ |
 | 6 | Modération, signalement, RGPD, back-office | ⏳ |
@@ -83,11 +83,13 @@ Pour **chacun** des fichiers ci-dessous, **dans cet ordre** : nouvelle requête 
 | 2 | [20261122000100_phase1_storage.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261122000100_phase1_storage.sql) | 1 |
 | 3 | [20261123000000_phase2_social.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261123000000_phase2_social.sql) | 2 |
 | 4 | [20261123000100_phase2_storage.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261123000100_phase2_storage.sql) | 2 |
+| 5 | [20261124000000_phase3_selfies.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261124000000_phase3_selfies.sql) | 3 |
+| 6 | [20261124000100_phase3_storage.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261124000100_phase3_storage.sql) | 3 |
 
 #### 3.5 Vérifier que tout est en place
 
 - Menu de gauche → **Table Editor** : tu dois voir les tables `age_gate_rejections`, `age_verifications`, `follows`, `post_media`, `posts`, `profiles`, `stories`, `story_views` et `user_private`.
-- Menu de gauche → **Storage** : tu dois voir 3 dossiers (*buckets*) : `avatars` (*Public*), `posts` et `stories` (privés).
+- Menu de gauche → **Storage** : tu dois voir 4 dossiers (*buckets*) : `avatars` (*Public*), `posts`, `stories` et `selfies` (privés).
 
 Si c'est le cas, passe à l'étape 4 🎉
 
@@ -416,6 +418,70 @@ Pour tester les abonnements, il faut **2 comptes sur 2 téléphones** (toi et to
 
 ---
 
+## Mettre à jour vers la phase 3 : le selfie du jour
+
+À faire **une fois**. Compte 15 minutes. (Phase 2 déjà installée.)
+
+### A. Base de données (navigateur)
+
+Supabase → **SQL Editor** → pour **chaque** fichier, dans l'ordre : nouvelle requête vide (**+**) → **« Copy raw file »** sur GitHub → coller → **Run** → **« Success. No rows returned »**.
+
+1. [20261124000000_phase3_selfies.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261124000000_phase3_selfies.sql)
+2. [20261124000100_phase3_storage.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261124000100_phase3_storage.sql)
+
+✅ Vérification : **Storage** affiche maintenant aussi un dossier `selfies`.
+
+### B. App (terminal)
+
+**Ctrl + C** pour arrêter l'app, puis :
+
+```bash
+cd ~/Desktop/PBS
+git checkout -- .
+git pull
+cd apps/mobile
+npm ci
+npx expo start --tunnel -c
+```
+
+`npm ci` est **obligatoire** cette fois : la phase 3 ajoute la caméra et les notifications.
+
+### C. Effacement automatique des photos (navigateur, recommandé)
+
+Les selfies ne sont **plus visibles** après 24 h (bloqué par le serveur). Cette étape les **efface réellement** du stockage, ainsi que les stories expirées (obligation RGPD : ne pas garder de données inutiles).
+
+1. **Créer la fonction** : Supabase → **Edge Functions** (menu de gauche) → **Deploy a new function** → **Via Editor**.
+   - Nom de la fonction : `purge-media`
+   - Efface le code d'exemple, colle celui-ci (bouton « Copy raw file ») : https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/functions/purge-media/index.ts
+   - **Deploy function**.
+2. **Autoriser l'appel planifié** : dans la fonction `purge-media` → onglet **Details** (ou *Settings*) → désactive **Enforce JWT verification** (« Verify JWT ») → **Save**.
+   *(Sans risque : la fonction ne fait qu'effacer des photos déjà expirées, quel que soit l'appelant.)*
+3. **La lancer toutes les heures** : Supabase → **Integrations** → **Cron** → active-le si demandé → **Create job** :
+   - Name : `purge-media`
+   - Schedule : `0 * * * *` (toutes les heures)
+   - Type : **Supabase Edge Function** → Method **POST** → fonction **purge-media**
+   - **Create cron job**.
+4. **Tester** : dans la fonction `purge-media` → **Test** (ou *Invoke*) → la réponse doit être `{"ok":true,"purged":{...}}`.
+
+> L'interface Supabase change souvent : si un bouton n'a pas exactement ce nom, envoie-moi une capture.
+
+### D. Tester le selfie du jour (à deux téléphones)
+
+1. **Rappels** : à la première ouverture de l'onglet selfie (gros bouton central), l'iPhone demande l'autorisation des **notifications** → **Autoriser**. Sous le bouton s'affiche « Prochaine vague : … » : un rappel arrivera à cette heure-là chaque jour (réglable dans Profil → ⚙️ → Notifications).
+2. **Toi** : gros bouton → **Prendre mon selfie** → autorise la caméra → déclencheur → **Envoyer**.
+   ✅ Écran « On cherche quelqu'un… » avec le globe et le temps restant (30 min).
+3. **Ton pote**, dans les 30 minutes : même chose.
+   ✅ Sur **les deux** téléphones : compte à rebours **3… 2… 1…**, flash, puis le selfie de l'autre en grand et le tien en petit.
+4. Chacun choisit **Suivre** ou **Passer** (indépendamment). Teste aussi **Voir le profil** et **Signaler** (le signalement est enregistré, il sera traité dans le back-office en phase 6).
+5. Onglet selfie : la section **Tes échanges (24 h)** liste vos échanges ; ils disparaîtront au bout de 24 h.
+6. **Encore un !** permet de renvoyer un selfie… mais :
+
+> ⚠️ **Règle anti-répétition** : deux personnes ne peuvent pas être de nouveau appariées avant **30 jours**. À deux testeurs, le 2e essai restera donc en attente puis expirera (c'est normal !). Pour refaire un test entre vous, exécute dans Supabase → SQL Editor : `delete from public.match_pairs;` (efface seulement l'historique des paires). L'idéal : inviter un 3e testeur.
+
+**Ce qui n'est pas encore là :** la notification « Tu as un match ! » quand l'app est fermée (il faut le compte Apple Developer et un « build de développement » ; en attendant, laisse l'app ouverte ou reviens sur l'onglet selfie).
+
+---
+
 ## Pour les développeurs
 
 ```bash
@@ -426,6 +492,8 @@ npm test               # tests unitaires (Jest)
 
 # Base de données : migrations + tests pgTAP sur un Postgres local (sans Docker)
 bash supabase/tests/local/run.sh
+# test de charge du matching (40 envois simultanés)
+bash supabase/tests/local/concurrency.sh 40
 # ou, avec Docker et la CLI Supabase :
 npx supabase start && npx supabase test db
 ```

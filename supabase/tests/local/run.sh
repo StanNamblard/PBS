@@ -29,6 +29,7 @@ FAIL=0
 for t in "$ROOT"/tests/database/*.test.sql; do
   echo "→ test $(basename "$t")"
   OUT="$("${PSQL[@]}" -t -A -f "$t" 2>&1)" || FAIL=1
+  echo "$OUT" | grep -E "ERROR|psql:" || true
   echo "$OUT" | grep -E "^(not ok|# )" || true
   if echo "$OUT" | grep -qE "^not ok|Looks like you (failed|planned)|ERROR"; then FAIL=1; fi
   echo "$OUT" | grep -cE "^ok" | sed 's/^/   tests réussis : /'

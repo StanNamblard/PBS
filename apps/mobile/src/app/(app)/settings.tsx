@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import * as Clipboard from 'expo-clipboard';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Switch, View } from 'react-native';
 
@@ -10,6 +10,8 @@ import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { Screen } from '@/components/Screen';
 import { signOut } from '@/features/auth/api';
+import { ensureNotificationPermission, isReminderEnabled, setReminderEnabled } from '@/features/selfie/reminders';
+import { notify } from '@/lib/dialogs';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { useMyProfile } from '@/features/profile/useMyProfile';
 import { updateMyProfile } from '@/features/social/api';
@@ -26,6 +28,21 @@ export default function SettingsScreen() {
   const { data: profile } = useMyProfile();
   const qc = useQueryClient();
   const [privateSaving, setPrivateSaving] = useState(false);
+  const [reminder, setReminder] = useState(true);
+
+  useEffect(() => {
+    void isReminderEnabled().then(setReminder);
+  }, []);
+
+  const toggleReminder = async (value: boolean) => {
+    setReminder(value);
+    if (value && !(await ensureNotificationPermission())) {
+      setReminder(false);
+      notify(t('selfie.notificationsBlocked'));
+      return;
+    }
+    await setReminderEnabled(value);
+  };
 
   const togglePrivate = async (value: boolean) => {
     if (!userId) return;
@@ -72,6 +89,18 @@ export default function SettingsScreen() {
         </View>
         <AppText variant="caption" muted>
           {t('settings.privateAccountHint')}
+        </AppText>
+      </Section>
+
+      <Section title={t('settings.notifications')}>
+        <View style={styles.switchRow}>
+          <AppText variant="bodyStrong" style={styles.flex}>
+            {t('selfie.dailyReminder')}
+          </AppText>
+          <Switch value={reminder} onValueChange={(v) => void toggleReminder(v)} trackColor={{ true: colors.primary, false: colors.border }} />
+        </View>
+        <AppText variant="caption" muted>
+          {t('selfie.dailyReminderHint')}
         </AppText>
       </Section>
 
