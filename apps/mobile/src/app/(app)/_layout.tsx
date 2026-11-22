@@ -36,6 +36,10 @@ export default function AppLayout() {
       <Stack.Screen name="q/[token]" options={{ presentation: 'modal' }} />
       <Stack.Screen name="chat/[userId]" />
       <Stack.Screen name="blocked" />
+      <Stack.Screen name="account/delete" />
+      <Stack.Screen name="account/export" />
+      <Stack.Screen name="admin/index" />
+      <Stack.Screen name="admin/report" />
       <Stack.Screen
         name="story/[userId]"
         options={{ presentation: 'fullScreenModal', animation: 'fade', contentStyle: { backgroundColor: '#000' } }}

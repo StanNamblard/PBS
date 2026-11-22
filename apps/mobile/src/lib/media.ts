@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 
+import { moderateUpload } from './moderation';
 import { supabase } from './supabase';
 
 export type Bucket = 'avatars' | 'posts' | 'stories' | 'selfies' | 'dm';
@@ -28,12 +29,17 @@ function randomName(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}.jpg`;
 }
 
-/** Envoie une photo préparée dans <bucket>/<userId>/ et renvoie son chemin. */
+/**
+ * Envoie une photo préparée dans <bucket>/<userId>/, la fait analyser par la
+ * modération automatique, et renvoie son chemin. Une photo refusée lève une
+ * erreur (« content_rejected » / « no_face ») et est effacée par le serveur.
+ */
 export async function uploadImage(bucket: Bucket, userId: string, image: PreparedImage): Promise<string> {
   const body = await (await fetch(image.uri)).arrayBuffer();
   const path = `${userId}/${randomName()}`;
   const { error } = await supabase.storage.from(bucket).upload(path, body, { contentType: 'image/jpeg', upsert: false });
   if (error) throw error;
+  await moderateUpload(bucket, path);
   return path;
 }
 

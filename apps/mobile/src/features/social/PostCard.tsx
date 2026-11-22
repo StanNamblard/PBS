@@ -1,11 +1,14 @@
 import Feather from '@expo/vector-icons/Feather';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { ActionMenu } from '@/components/ActionMenu';
 import { AppText } from '@/components/AppText';
 import { Avatar } from '@/components/Avatar';
 import { useAuth } from '@/features/auth/AuthProvider';
+import { ReportSheet } from '@/features/selfie/ReportSheet';
 import { publicUrl } from '@/lib/media';
 import { timeAgo } from '@/lib/time';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -23,6 +26,8 @@ export function PostCard({ post, onDeleted }: { post: Post; onDeleted?: () => vo
   const { userId } = useAuth();
   const invalidate = useInvalidateContent();
   const mine = post.author_id === userId;
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
   const confirmDelete = async () => {
     const ok = await confirm({ title: t('post.deleteConfirm'), confirmText: t('post.delete'), cancelText: t('common.cancel'), destructive: true });
@@ -46,12 +51,35 @@ export function PostCard({ post, onDeleted }: { post: Post; onDeleted?: () => vo
             · {timeAgo(post.created_at, t, i18n.language)}
           </AppText>
         </Pressable>
-        {mine ? (
-          <Pressable hitSlop={12} accessibilityLabel={t('post.delete')} onPress={() => void confirmDelete()}>
-            <Feather name="more-horizontal" size={22} color={colors.text} />
-          </Pressable>
-        ) : null}
+        <Pressable hitSlop={12} accessibilityLabel={t('profile.more')} onPress={() => setMenuOpen(true)}>
+          <Feather name="more-horizontal" size={22} color={colors.text} />
+        </Pressable>
       </View>
+      {mine && post.moderation === 'pending' ? (
+        <AppText variant="caption" color={colors.primary} style={styles.pending}>
+          {t('post.pending')}
+        </AppText>
+      ) : null}
+      <ActionMenu
+        visible={menuOpen}
+        cancelLabel={t('common.cancel')}
+        onClose={() => setMenuOpen(false)}
+        items={
+          mine
+            ? [{ label: t('post.delete'), destructive: true, onPress: () => void confirmDelete() }]
+            : [{ label: t('post.report'), destructive: true, onPress: () => setReportOpen(true) }]
+        }
+      />
+      {!mine ? (
+        <ReportSheet
+          visible={reportOpen}
+          onClose={() => setReportOpen(false)}
+          targetId={post.author_id}
+          username={post.username}
+          context="post"
+          contextId={post.id}
+        />
+      ) : null}
       <MediaCarousel media={post.media} />
       {post.caption ? (
         <AppText style={styles.caption}>
@@ -68,4 +96,5 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
   author: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, flexShrink: 1 },
   caption: { paddingHorizontal: spacing.md, paddingTop: spacing.sm },
+  pending: { paddingHorizontal: spacing.md, paddingBottom: spacing.sm },
 });

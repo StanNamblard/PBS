@@ -5,6 +5,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Animated, FlatList, Modal, Pressable, StyleSheet, View } from 'react-native';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
@@ -13,6 +14,7 @@ import { UserRow } from '@/components/UserRow';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { deleteStory, getStoryViewers, getUserStories, markStoryViewed } from '@/features/social/api';
 import { keys, useProfile } from '@/features/social/hooks';
+import { ReportSheet } from '@/features/selfie/ReportSheet';
 import { publicUrl, useSignedUrls } from '@/lib/media';
 import { timeAgo } from '@/lib/time';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -45,6 +47,7 @@ export default function StoryViewerScreen() {
   const [loadedId, setLoadedId] = useState<string | null>(null);
   const [paused, setPaused] = useState(false);
   const [viewersOpen, setViewersOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
   const progress = useRef(new Animated.Value(0)).current;
   const startedAt = useRef(false);
 
@@ -107,7 +110,7 @@ export default function StoryViewerScreen() {
 
   // Barre de progression : démarre quand l'image est chargée, s'arrête en pause
   useEffect(() => {
-    if (!current || loadedId !== current.id || paused || viewersOpen) return;
+    if (!current || loadedId !== current.id || paused || viewersOpen || reportOpen) return;
     const anim = Animated.timing(progress, {
       toValue: 1,
       duration: STORY_DURATION_MS * (1 - progressValue.current),
@@ -117,7 +120,7 @@ export default function StoryViewerScreen() {
       if (finished) goNext();
     });
     return () => anim.stop();
-  }, [current, loadedId, paused, viewersOpen, progress, goNext]);
+  }, [current, loadedId, paused, viewersOpen, reportOpen, progress, goNext]);
 
   const remove = () => {
     if (!current) return;
@@ -186,6 +189,11 @@ export default function StoryViewerScreen() {
             </AppText>
           ) : null}
           <View style={styles.flex} />
+          {!isMine && current ? (
+            <Pressable hitSlop={12} onPress={() => setReportOpen(true)} accessibilityLabel={t('story.report')}>
+              <Feather name="flag" size={22} color="#FFFFFF" />
+            </Pressable>
+          ) : null}
           <Pressable hitSlop={12} onPress={close} accessibilityLabel="close">
             <Feather name="x" size={28} color="#FFFFFF" />
           </Pressable>
@@ -208,6 +216,16 @@ export default function StoryViewerScreen() {
         ) : null}
       </SafeAreaView>
 
+      {!isMine && current && profile ? (
+        <ReportSheet
+          visible={reportOpen}
+          onClose={() => setReportOpen(false)}
+          targetId={userId}
+          username={profile.username}
+          context="story"
+          contextId={current.id}
+        />
+      ) : null}
       {current ? (
         <ViewersSheet storyId={current.id} visible={viewersOpen} onClose={() => setViewersOpen(false)} colors={colors} />
       ) : null}

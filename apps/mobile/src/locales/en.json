@@ -203,7 +203,11 @@
     "followingButton": "Following ✓",
     "more": "More options",
     "blockUser": "Block",
-    "reportUser": "Report"
+    "reportUser": "Report",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "muted": "@{{username}} is muted: their posts and stories no longer appear in your feed.",
+    "unmuted": "@{{username}} is no longer muted."
   },
   "settings": {
     "title": "Settings",
@@ -264,7 +268,11 @@
     "no_media_in_requests": "No photos until your request is accepted.",
     "empty_message": "Empty message.",
     "cannot_message_self": "You can't message yourself.",
-    "cannot_block_self": "You can't block yourself."
+    "cannot_block_self": "You can't block yourself.",
+    "content_rejected": "This photo breaks the community guidelines (nudity, violence…). It wasn't published.",
+    "moderation_required": "The photo couldn't be checked. Try again in a moment.",
+    "no_face": "We can't see a face in this selfie. Retake it facing the camera!",
+    "not_admin": "Admins only."
   },
   "time": {
     "now": "just now",
@@ -291,7 +299,9 @@
   "post": {
     "delete": "Delete post",
     "deleteConfirm": "Permanently delete this post?",
-    "notFound": "This post no longer exists or isn't visible."
+    "notFound": "This post no longer exists or isn't visible.",
+    "pending": "⏳ Under review: only you can see it for now.",
+    "report": "Report post"
   },
   "story": {
     "views": "{{n}} view(s)",
@@ -299,7 +309,8 @@
     "noViewers": "Nobody has seen your story yet.",
     "delete": "Delete story",
     "deleteConfirm": "Delete this story?",
-    "expiresIn": "Expires in {{h}}h"
+    "expiresIn": "Expires in {{h}}h",
+    "report": "Report story"
   },
   "requests": {
     "title": "Follow requests",
@@ -340,5 +351,45 @@
     "fake": "Fake account / impersonation",
     "other": "Other",
     "thanks": "Thanks. Our team will review this report."
+  },
+  "account": {
+    "suspendedReason": "Reason: {{reason}}",
+    "contact": "To appeal this decision, write to: [CONTACT EMAIL TO BE COMPLETED]",
+    "deletionTitle": "Deletion in progress",
+    "deletionBody": "Your account will be permanently deleted on {{date}}. Until then, it's invisible to everyone.",
+    "cancelDeletion": "Cancel deletion and keep my account",
+    "deleteTitle": "Delete my account",
+    "deleteIntro": "Your account will be deactivated immediately (invisible to everyone), then permanently deleted after 30 days: profile, photos, selfies, messages, follows.",
+    "deleteUndo": "Changed your mind? Sign in again within 30 days to cancel.",
+    "deleteExportHint": "Export your data first if you want to keep it.",
+    "deleteType": "To confirm, type DELETE",
+    "deleteWord": "DELETE",
+    "deleteButton": "Delete my account",
+    "deleted": "Your account will be deleted on {{date}}.",
+    "exportTitle": "Export my data",
+    "exportBody": "You'll get a file with your info, follows, posts, selfies and messages, with download links to your photos valid for 7 days.",
+    "exportButton": "Generate my file",
+    "exportReady": "File ready"
+  },
+  "admin": {
+    "title": "Moderation",
+    "entry": "Moderation (admin)",
+    "reports": "Reports",
+    "review": "To review",
+    "noReports": "No pending reports 🎉",
+    "noReview": "Nothing to review 🎉",
+    "reportedBy": "Reported by @{{username}}",
+    "openReports": "{{n}} open report(s) on this account",
+    "context": "Context: {{context}}",
+    "dismiss": "Dismiss (no issue)",
+    "removeContent": "Remove content",
+    "suspend": "Suspend account",
+    "ban": "Ban permanently",
+    "note": "Reason (sent to the user if suspended or banned)",
+    "approve": "Approve",
+    "reject": "Reject",
+    "done": "Action saved.",
+    "statusLabel": "Account status: {{status}}",
+    "reactivate": "Reactivate account"
   }
 }

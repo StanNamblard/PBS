@@ -27,6 +27,10 @@ const KNOWN_CODES = [
   'empty_message',
   'cannot_message_self',
   'cannot_block_self',
+  'content_rejected',
+  'moderation_required',
+  'no_face',
+  'not_admin',
 ] as const;
 
 export type ServerErrorCode = (typeof KNOWN_CODES)[number];

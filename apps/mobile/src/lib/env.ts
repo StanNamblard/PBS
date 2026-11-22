@@ -11,4 +11,4 @@ export const env = {
 export const isConfigured = env.supabaseUrl.startsWith('https://') && env.supabaseKey.length > 10;
 
 /** Version des CGU / politique de confidentialité acceptée à l'inscription. */
-export const TERMS_VERSION = '2026-11-v1';
+export { LEGAL_VERSION as TERMS_VERSION } from '@/legal/fr';

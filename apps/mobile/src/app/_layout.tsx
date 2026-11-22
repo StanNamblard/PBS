@@ -81,6 +81,7 @@ function RootNavigator() {
   const underage = deviceUnderage || onboarding === 'underage';
   const inOnboarding = signedIn && !underage && (onboarding === 'age_required' || onboarding === 'profile_required');
   const suspended = signedIn && !underage && onboarding === 'suspended';
+  const deletionPending = signedIn && !underage && onboarding === 'deletion_pending';
   const complete = signedIn && !underage && onboarding === 'complete';
 
   return (
@@ -105,6 +106,9 @@ function RootNavigator() {
           </Stack.Protected>
           <Stack.Protected guard={suspended}>
             <Stack.Screen name="suspended" />
+          </Stack.Protected>
+          <Stack.Protected guard={deletionPending}>
+            <Stack.Screen name="deletion-pending" />
           </Stack.Protected>
           <Stack.Protected guard={complete}>
             <Stack.Screen name="(app)" />

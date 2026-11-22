@@ -42,6 +42,8 @@ export interface Post {
   caption: string | null;
   created_at: string;
   media: MediaItem[];
+  /** 'pending' = en cours de vérification (visible par l'auteur seulement) */
+  moderation?: 'pending' | 'approved' | 'rejected';
 }
 
 export interface StoryTrayItem {

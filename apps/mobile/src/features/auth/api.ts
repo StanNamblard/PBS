@@ -6,7 +6,7 @@ import { Platform } from 'react-native';
 
 import { supabase } from '@/lib/supabase';
 
-export type OnboardingState = 'underage' | 'age_required' | 'profile_required' | 'suspended' | 'complete';
+export type OnboardingState = 'underage' | 'age_required' | 'profile_required' | 'suspended' | 'deletion_pending' | 'complete';
 
 /** Envoie un code de connexion (6 à 10 chiffres selon le réglage Supabase) par email (crée le compte si besoin). */
 export async function sendEmailOtp(email: string) {

@@ -13,5 +13,6 @@ export default function Index() {
   if (onboarding === 'age_required') return <Redirect href="/birthdate" />;
   if (onboarding === 'profile_required') return <Redirect href="/terms" />;
   if (onboarding === 'suspended') return <Redirect href="/suspended" />;
+  if (onboarding === 'deletion_pending') return <Redirect href="/deletion-pending" />;
   return <Redirect href="/home" />;
 }

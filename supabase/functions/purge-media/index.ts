@@ -4,6 +4,8 @@
 //   * selfies non appariés (expirés / annulés)
 //   * selfies des matchs de plus de 24 h
 //   * stories expirées (et leur ligne en base)
+//   * comptes dont la suppression a été demandée il y a plus de 30 jours
+//     (toutes leurs photos, puis le compte lui-même et toutes ses données)
 // À appeler régulièrement (toutes les heures) par une tâche planifiée Supabase.
 // Sans danger si elle est appelée plusieurs fois (idempotente).
 // =============================================================================
@@ -37,5 +39,22 @@ Deno.serve(async () => {
     }
   }
 
-  return Response.json({ ok: true, purged: result });
+  // Comptes supprimés depuis plus de 30 jours : effacement définitif
+  const { data: accounts, error: accError } = await supabase.rpc('accounts_to_delete', { p_limit: 50 });
+  if (accError) return Response.json({ ok: false, error: accError.message }, { status: 500 });
+  let deletedAccounts = 0;
+  for (const { user_id } of (accounts ?? []) as { user_id: string }[]) {
+    for (const bucket of ['avatars', 'posts', 'stories', 'selfies', 'dm']) {
+      const { data: files } = await supabase.storage.from(bucket).list(user_id, { limit: 1000 });
+      const paths = (files ?? []).map((f) => `${user_id}/${f.name}`);
+      for (let i = 0; i < paths.length; i += 100) {
+        await supabase.storage.from(bucket).remove(paths.slice(i, i + 100));
+      }
+    }
+    // Supprimer l'utilisateur efface en cascade toutes ses données en base
+    const { error: delError } = await supabase.auth.admin.deleteUser(user_id);
+    if (!delError) deletedAccounts++;
+  }
+
+  return Response.json({ ok: true, purged: result, deletedAccounts });
 });

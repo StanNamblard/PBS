@@ -203,7 +203,11 @@
     "followingButton": "Abonné ✓",
     "more": "Plus d'options",
     "blockUser": "Bloquer",
-    "reportUser": "Signaler"
+    "reportUser": "Signaler",
+    "mute": "Mettre en sourdine",
+    "unmute": "Réactiver",
+    "muted": "@{{username}} est en sourdine : ses publications et stories n'apparaissent plus dans ton fil.",
+    "unmuted": "@{{username}} n'est plus en sourdine."
   },
   "settings": {
     "title": "Paramètres",
@@ -264,7 +268,11 @@
     "no_media_in_requests": "Pas de photo tant que ta demande n'est pas acceptée.",
     "empty_message": "Message vide.",
     "cannot_message_self": "Tu ne peux pas t'écrire à toi-même.",
-    "cannot_block_self": "Tu ne peux pas te bloquer toi-même."
+    "cannot_block_self": "Tu ne peux pas te bloquer toi-même.",
+    "content_rejected": "Cette photo ne respecte pas les règles de la communauté (nudité, violence…). Elle n'a pas été publiée.",
+    "moderation_required": "La vérification de la photo n'a pas pu être faite. Réessaie dans un instant.",
+    "no_face": "On ne voit pas de visage sur ce selfie. Reprends-le face à la caméra !",
+    "not_admin": "Réservé aux administrateurs."
   },
   "time": {
     "now": "à l'instant",
@@ -291,7 +299,9 @@
   "post": {
     "delete": "Supprimer la publication",
     "deleteConfirm": "Supprimer définitivement cette publication ?",
-    "notFound": "Cette publication n'existe plus ou n'est pas visible."
+    "notFound": "Cette publication n'existe plus ou n'est pas visible.",
+    "pending": "⏳ En cours de vérification : visible par toi seul pour l'instant.",
+    "report": "Signaler la publication"
   },
   "story": {
     "views": "{{n}} vue(s)",
@@ -299,7 +309,8 @@
     "noViewers": "Personne n'a encore vu ta story.",
     "delete": "Supprimer la story",
     "deleteConfirm": "Supprimer cette story ?",
-    "expiresIn": "Expire dans {{h}} h"
+    "expiresIn": "Expire dans {{h}} h",
+    "report": "Signaler la story"
   },
   "requests": {
     "title": "Demandes d'abonnement",
@@ -340,5 +351,45 @@
     "fake": "Faux compte / usurpation",
     "other": "Autre",
     "thanks": "Merci. Notre équipe va examiner ce signalement."
+  },
+  "account": {
+    "suspendedReason": "Motif : {{reason}}",
+    "contact": "Pour contester cette décision, écris à : [EMAIL DE CONTACT À COMPLÉTER]",
+    "deletionTitle": "Suppression en cours",
+    "deletionBody": "Ton compte sera définitivement supprimé le {{date}}. D'ici là, il est invisible pour tout le monde.",
+    "cancelDeletion": "Annuler la suppression et retrouver mon compte",
+    "deleteTitle": "Supprimer mon compte",
+    "deleteIntro": "Ton compte sera désactivé immédiatement (invisible pour tout le monde), puis supprimé définitivement après 30 jours : profil, photos, selfies, messages, abonnements.",
+    "deleteUndo": "Tu as changé d'avis ? Reconnecte-toi avant 30 jours pour annuler.",
+    "deleteExportHint": "Pense à exporter tes données avant si tu veux les garder.",
+    "deleteType": "Pour confirmer, écris SUPPRIMER",
+    "deleteWord": "SUPPRIMER",
+    "deleteButton": "Supprimer mon compte",
+    "deleted": "Ton compte sera supprimé le {{date}}.",
+    "exportTitle": "Exporter mes données",
+    "exportBody": "Tu vas obtenir un fichier contenant tes informations, tes abonnements, tes publications, tes selfies et tes messages, avec des liens de téléchargement de tes photos valables 7 jours.",
+    "exportButton": "Générer mon fichier",
+    "exportReady": "Fichier prêt"
+  },
+  "admin": {
+    "title": "Modération",
+    "entry": "Modération (admin)",
+    "reports": "Signalements",
+    "review": "À revoir",
+    "noReports": "Aucun signalement en attente 🎉",
+    "noReview": "Aucun contenu à revoir 🎉",
+    "reportedBy": "Signalé par @{{username}}",
+    "openReports": "{{n}} signalement(s) ouvert(s) sur ce compte",
+    "context": "Contexte : {{context}}",
+    "dismiss": "Classer (pas de problème)",
+    "removeContent": "Supprimer le contenu",
+    "suspend": "Suspendre le compte",
+    "ban": "Bannir définitivement",
+    "note": "Motif (envoyé à l'utilisateur en cas de suspension ou de bannissement)",
+    "approve": "Valider",
+    "reject": "Refuser",
+    "done": "Action enregistrée.",
+    "statusLabel": "Statut du compte : {{status}}",
+    "reactivate": "Réactiver le compte"
   }
 }

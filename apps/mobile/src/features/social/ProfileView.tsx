@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather';
 import { router } from 'expo-router';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
@@ -11,6 +11,7 @@ import { Avatar } from '@/components/Avatar';
 import { Header } from '@/components/Header';
 import { SmallButton } from '@/components/SmallButton';
 import { blockUser } from '@/features/messages/api';
+import { supabase } from '@/lib/supabase';
 import { countryName, flagEmoji } from '@/features/onboarding/CountryPicker';
 import { ReportSheet } from '@/features/selfie/ReportSheet';
 import { confirm, notify } from '@/lib/dialogs';
@@ -40,6 +41,25 @@ export function ProfileView({ userId, isTab }: Props) {
   const qc = useQueryClient();
   const [reportOpen, setReportOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const muted = useQuery({
+    queryKey: ['muted', userId],
+    enabled: !!profile && !profile.is_me,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('is_muted', { p_target: userId });
+      if (error) throw error;
+      return data as boolean;
+    },
+  });
+  const toggleMute = async () => {
+    if (!profile) return;
+    const fn = muted.data ? 'unmute_user' : 'mute_user';
+    const { error } = await supabase.rpc(fn, { p_target: profile.id });
+    if (error) return notify(t('errors.generic'));
+    await qc.invalidateQueries({ queryKey: ['muted', userId] });
+    await qc.invalidateQueries({ queryKey: ['feed'] });
+    await qc.invalidateQueries({ queryKey: ['storyTray'] });
+    notify(t(muted.data ? 'profile.unmuted' : 'profile.muted', { username: profile.username }));
+  };
 
   if (profileQuery.isPending) {
     return <ActivityIndicator style={styles.loader} color={colors.primary} />;
@@ -171,6 +191,9 @@ export function ProfileView({ userId, isTab }: Props) {
           cancelLabel={t('common.cancel')}
           onClose={() => setMenuOpen(false)}
           items={[
+            ...(profile.i_follow === 'active'
+              ? [{ label: muted.data ? t('profile.unmute') : t('profile.mute'), onPress: () => void toggleMute() }]
+              : []),
             { label: t('profile.reportUser'), onPress: () => setReportOpen(true) },
             { label: t('profile.blockUser'), destructive: true, onPress: () => void block() },
           ]}

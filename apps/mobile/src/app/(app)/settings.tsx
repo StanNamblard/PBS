@@ -1,4 +1,4 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Clipboard from 'expo-clipboard';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
@@ -9,6 +9,7 @@ import { Pressable, StyleSheet, Switch, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { Screen } from '@/components/Screen';
+import { amIAdmin } from '@/features/admin/api';
 import { signOut } from '@/features/auth/api';
 import { ensureNotificationPermission, isReminderEnabled, setReminderEnabled } from '@/features/selfie/reminders';
 import { notify } from '@/lib/dialogs';
@@ -29,6 +30,7 @@ export default function SettingsScreen() {
   const qc = useQueryClient();
   const [privateSaving, setPrivateSaving] = useState(false);
   const [reminder, setReminder] = useState(true);
+  const { data: isAdmin } = useQuery({ queryKey: ['amIAdmin'], queryFn: amIAdmin });
 
   useEffect(() => {
     void isReminderEnabled().then(setReminder);
@@ -132,13 +134,16 @@ export default function SettingsScreen() {
 
       <Section title={t('settings.account')}>
         <Button variant="secondary" label={t('settings.blockedAccounts')} onPress={() => router.push('/blocked')} />
-        <Button variant="secondary" label={t('settings.exportData')} disabled onPress={() => {}} />
-        <Button variant="secondary" label={t('settings.deleteAccount')} disabled onPress={() => {}} />
-        <AppText variant="caption" muted center>
-          {t('common.phase', { n: 6 })}
-        </AppText>
+        <Button variant="secondary" label={t('settings.exportData')} onPress={() => router.push('/account/export')} />
+        <Button variant="secondary" label={t('settings.deleteAccount')} onPress={() => router.push('/account/delete')} />
         <Button variant="danger" label={t('common.signOut')} onPress={() => void signOut()} />
       </Section>
+
+      {isAdmin ? (
+        <Section title={t('admin.title')}>
+          <Button label={t('admin.entry')} onPress={() => router.push('/admin')} />
+        </Section>
+      ) : null}
 
       {__DEV__ && userId ? <DevTools userId={userId} /> : null}
 
