@@ -294,6 +294,13 @@ node -v
 cd ~/Desktop/PBS/apps/mobile
 ```
 
+> 🪟 **Windows uniquement (à faire une seule fois)** : PowerShell bloque par défaut les commandes `npm` et `npx` (message *« l'exécution de scripts est désactivée sur ce système »*). Pour l'autoriser pour ton compte uniquement, tape :
+> ```powershell
+> Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+> ```
+> Réponds `O` (ou `T` / `Y` selon la question), puis Entrée. **Ferme et rouvre PowerShell**, puis `cd ~/Desktop/PBS/apps/mobile`.
+> Si ce n'est pas possible, utilise **Invite de commandes** (Démarrer → tape `cmd`) au lieu de PowerShell : les commandes sont les mêmes, avec `cd %USERPROFILE%\Desktop\PBS\apps\mobile` pour aller dans le dossier.
+
 #### 6.2 Installer les composants de l'app (la première fois seulement)
 
 Vérifie que tu es dans le bon dossier : tape `ls` (Mac) ou `dir` (Windows). Tu dois voir `app.json` et `package.json`. Sinon : `cd ~/Desktop/PBS/apps/mobile`.
