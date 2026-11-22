@@ -19,6 +19,12 @@ for f in "$ROOT"/migrations/*.sql; do
   "${PSQL[@]}" -f "$f" >/dev/null
 done
 
+if [ "${TEST_RESET:-0}" = "1" ]; then
+  echo "→ test du script de remise à zéro puis réinstallation"
+  "${PSQL[@]}" -f "$ROOT/reset_phase1.sql" >/dev/null
+  for f in "$ROOT"/migrations/*.sql; do "${PSQL[@]}" -f "$f" >/dev/null; done
+fi
+
 FAIL=0
 for t in "$ROOT"/tests/database/*.test.sql; do
   echo "→ test $(basename "$t")"

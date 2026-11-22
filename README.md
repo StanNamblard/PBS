@@ -50,22 +50,74 @@ Pour taper les commandes : **Terminal** sur Mac, **PowerShell** sur Windows.
 
 ### 3. Installer la base de données
 
-Dans un terminal :
+But de l'étape : créer dans ton projet Supabase les tables (profils, etc.) et les règles de sécurité.
+**Tout se fait dans le navigateur, sans terminal.** Il y a 2 fichiers à copier-coller, **dans l'ordre**.
+
+#### 3.1 Ouvrir l'éditeur SQL de Supabase
+
+1. Va sur https://supabase.com/dashboard et clique sur ton projet **bps**.
+2. Dans la barre d'icônes à **gauche**, clique sur **SQL Editor** (icône `>_`).
+3. Si un onglet de requête est déjà ouvert avec du texte, clique sur **+** (ou *New query*) pour avoir une page **vide**.
+
+#### 3.2 Copier le 1er fichier
+
+1. Dans un **autre onglet** du navigateur, ouvre ce fichier sur GitHub (connecte-toi à GitHub si besoin) :
+   https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261122000000_phase1_identity.sql
+2. Au-dessus du code, à droite, clique sur l'icône **« Copy raw file »** (deux petits carrés superposés).
+   👉 Ne sélectionne pas le texte à la souris : avec ce bouton, tu es sûr de tout copier, de la première à la dernière ligne.
+
+#### 3.3 Exécuter le 1er fichier
+
+1. Reviens sur l'onglet Supabase, clique dans la zone de texte vide et colle (**Cmd + V** sur Mac, **Ctrl + V** sur Windows).
+2. Clique sur le bouton vert **Run** en bas à droite (ou **Cmd/Ctrl + Entrée**).
+3. Si Supabase affiche une fenêtre d'avertissement du type *« Potential issue detected… destructive operation »*, clique sur **Run this query**. C'est normal : le script contient des instructions de sécurité (« revoke ») que Supabase signale par précaution.
+4. ✅ Résultat attendu : en bas, **« Success. No rows returned »**.
+
+#### 3.4 Copier et exécuter le 2e fichier
+
+1. Dans Supabase, ouvre une **nouvelle** requête vide (**+**).
+2. Ouvre le 2e fichier sur GitHub et copie-le avec le même bouton :
+   https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261122000100_phase1_storage.sql
+3. Colle-le dans Supabase, puis **Run**.
+4. ✅ Résultat attendu : **« Success. No rows returned »**.
+
+#### 3.5 Vérifier que tout est en place
+
+- Menu de gauche → **Table Editor** : tu dois voir 4 tables : `age_gate_rejections`, `age_verifications`, `profiles` et `user_private` (vides, c'est normal).
+- Menu de gauche → **Storage** : tu dois voir un dossier (*bucket*) `avatars` marqué *Public*.
+
+Si c'est le cas, passe à l'étape 4 🎉
+
+#### En cas d'erreur
+
+| Message affiché | Cause | Solution |
+|---|---|---|
+| `... already exists` (ex. `type "account_status" already exists`) | Le fichier a déjà été exécuté, en entier ou en partie (une tentative précédente). | Faire la **remise à zéro** ci-dessous, puis recommencer à 3.2. |
+| `syntax error at or near ...` | Le copier-coller est incomplet (début ou fin manquant). | Vider la zone de texte, recopier avec le bouton **« Copy raw file »**, relancer. Si l'erreur dit aussi *already exists*, faire d'abord la remise à zéro. |
+| `relation "storage.buckets" does not exist` | Le projet Supabase n'a pas fini de démarrer. | Attendre 2 minutes, recharger la page, relancer le 2e fichier. |
+| `404` / page introuvable sur GitHub | Tu n'es pas connecté à GitHub avec le compte qui a accès au projet. | Se connecter sur github.com, puis rouvrir le lien. |
+
+**Remise à zéro** (seulement en cas d'erreur `already exists`) : dans Supabase, nouvelle requête vide, colle ce fichier puis **Run** :
+https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/reset_phase1.sql
+Il efface uniquement ce que les deux fichiers ont créé. Recommence ensuite à l'étape 3.2.
+
+> Toujours bloqué ? Envoie-moi une **capture d'écran du message d'erreur** (en bas de l'éditeur SQL) : je saurai exactement quoi faire.
+
+<details>
+<summary>Méthode alternative pour les développeurs (terminal + CLI Supabase)</summary>
+
+Depuis le dossier du projet cloné (voir étape 5) :
 
 ```bash
-git clone https://github.com/StanNamblard/PBS.git
-cd PBS
-git checkout claude/social-app-architecture-lb7tbk
-
 npx supabase login                          # ouvre le navigateur pour t'authentifier
-npx supabase link --project-ref TON_REF     # TON_REF = les lettres dans l'URL du projet :
+npx supabase link --project-ref TON_REF     # TON_REF = l'identifiant de 20 lettres dans l'URL :
                                             # https://supabase.com/dashboard/project/TON_REF
-npx supabase db push                        # crée les tables et les règles de sécurité
+npx supabase db push                        # applique supabase/migrations
 ```
 
-(Le mot de passe de la base est demandé : c'est celui de l'étape 2.)
-
-*Alternative sans terminal :* dans Supabase → **SQL Editor**, copie-colle puis exécute (*Run*) le contenu de chaque fichier de `supabase/migrations/`, **dans l'ordre**.
+Le mot de passe de la base (étape 2) est demandé. **Rien ne s'affiche quand tu le tapes** (c'est normal, pour la sécurité) : tape-le en entier puis appuie sur Entrée.
+Si tu as déjà fait la méthode du navigateur, n'utilise pas celle-ci (elle essaierait de tout recréer).
+</details>
 
 ### 4. Configurer la connexion par email
 
@@ -76,13 +128,23 @@ Dans le tableau de bord Supabase :
 
 > ⚠️ Le service d'email intégré de Supabase n'envoie que **quelques emails par heure**. C'est suffisant pour tester seul. Avant d'inviter des testeurs, il faudra brancher un service d'envoi (ex. Resend, gratuit jusqu'à 3 000 emails/mois). Je te guiderai.
 
-### 5. Relier l'app à Supabase
+### 5. Récupérer le code et le relier à Supabase
 
-1. Supabase → **Project Settings → API Keys** : copie l'**URL du projet** et la clé **publishable** (commence par `sb_publishable_`, ou la clé « anon » sur les anciens projets).
-2. Dans le dossier `apps/mobile`, copie le fichier `.env.example` en `.env` et colle ces deux valeurs.
+1. Dans un terminal, récupère le code du projet sur ton ordinateur (une seule fois) :
+
+   ```bash
+   git clone https://github.com/StanNamblard/PBS.git
+   cd PBS
+   git checkout claude/social-app-architecture-lb7tbk
+   ```
+
+2. Supabase → **Project Settings → API Keys** : copie l'**URL du projet** et la clé **publishable** (commence par `sb_publishable_`, ou la clé « anon » sur les anciens projets).
+3. Dans le dossier `PBS/apps/mobile`, copie le fichier `.env.example` en `.env` et colle ces deux valeurs.
    *Ne mets JAMAIS la clé « secret » / « service_role » dans ce fichier.*
 
 ### 6. Lancer l'app
+
+Dans le terminal, depuis le dossier `PBS` :
 
 ```bash
 cd apps/mobile
