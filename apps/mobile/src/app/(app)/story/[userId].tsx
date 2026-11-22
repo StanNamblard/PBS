@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, Animated, FlatList, Modal, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Animated, FlatList, Modal, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
@@ -17,6 +17,7 @@ import { publicUrl, useSignedUrls } from '@/lib/media';
 import { timeAgo } from '@/lib/time';
 import { useTheme } from '@/theme/ThemeProvider';
 import { spacing } from '@/theme/tokens';
+import { confirm, notify } from '@/lib/dialogs';
 
 const STORY_DURATION_MS = 5000;
 
@@ -121,20 +122,17 @@ export default function StoryViewerScreen() {
   const remove = () => {
     if (!current) return;
     setPaused(true);
-    Alert.alert(t('story.deleteConfirm'), undefined, [
-      { text: t('common.cancel'), style: 'cancel', onPress: () => setPaused(false) },
-      {
-        text: t('story.delete'),
-        style: 'destructive',
-        onPress: async () => {
-          await deleteStory(current).catch(() => Alert.alert(t('errors.generic')));
+    void confirm({ title: t('story.deleteConfirm'), confirmText: t('story.delete'), cancelText: t('common.cancel'), destructive: true }).then(
+      async (ok) => {
+        if (ok) {
+          await deleteStory(current).catch(() => notify(t('errors.generic')));
           await qc.invalidateQueries({ queryKey: ['stories', userId] });
           await qc.invalidateQueries({ queryKey: keys.tray });
           setIndex((i) => Math.max(0, i - 1));
-          setPaused(false);
-        },
+        }
+        setPaused(false);
       },
-    ]);
+    );
   };
 
   const uri = current ? urls?.[current.storage_path] : undefined;

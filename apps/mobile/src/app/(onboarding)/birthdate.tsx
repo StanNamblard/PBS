@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
@@ -14,6 +14,7 @@ import { dateFieldOrder, type DatePart } from '@/features/onboarding/dateOrder';
 import { serverErrorKey } from '@/lib/errors';
 import { useTheme } from '@/theme/ThemeProvider';
 import { spacing } from '@/theme/tokens';
+import { confirm } from '@/lib/dialogs';
 
 /**
  * Contrôle d'âge « neutre » (recommandation Apple/Google) : aucun champ pré-rempli
@@ -50,10 +51,14 @@ export default function BirthdateScreen() {
     const formatted = new Intl.DateTimeFormat(i18n.language, { dateStyle: 'long', timeZone: 'UTC' }).format(
       new Date(Date.UTC(parsed.year, parsed.month - 1, parsed.day)),
     );
-    Alert.alert(t('birthdate.confirmTitle'), t('birthdate.confirmBody', { date: formatted }), [
-      { text: t('common.cancel'), style: 'cancel' },
-      { text: t('common.continue'), onPress: () => void send(parsed.iso) },
-    ]);
+    void confirm({
+      title: t('birthdate.confirmTitle'),
+      message: t('birthdate.confirmBody', { date: formatted }),
+      confirmText: t('common.continue'),
+      cancelText: t('common.cancel'),
+    }).then((ok) => {
+      if (ok) void send(parsed.iso);
+    });
   };
 
   const send = async (iso: string) => {

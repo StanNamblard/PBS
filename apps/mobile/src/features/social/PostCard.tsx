@@ -1,7 +1,7 @@
 import Feather from '@expo/vector-icons/Feather';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { Avatar } from '@/components/Avatar';
@@ -10,6 +10,7 @@ import { publicUrl } from '@/lib/media';
 import { timeAgo } from '@/lib/time';
 import { useTheme } from '@/theme/ThemeProvider';
 import { spacing } from '@/theme/tokens';
+import { confirm, notify } from '@/lib/dialogs';
 
 import { deletePost } from './api';
 import { useInvalidateContent } from './hooks';
@@ -23,23 +24,17 @@ export function PostCard({ post, onDeleted }: { post: Post; onDeleted?: () => vo
   const invalidate = useInvalidateContent();
   const mine = post.author_id === userId;
 
-  const confirmDelete = () =>
-    Alert.alert(t('post.deleteConfirm'), undefined, [
-      { text: t('common.cancel'), style: 'cancel' },
-      {
-        text: t('post.delete'),
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await deletePost(post);
-            await invalidate();
-            onDeleted?.();
-          } catch {
-            Alert.alert(t('errors.generic'));
-          }
-        },
-      },
-    ]);
+  const confirmDelete = async () => {
+    const ok = await confirm({ title: t('post.deleteConfirm'), confirmText: t('post.delete'), cancelText: t('common.cancel'), destructive: true });
+    if (!ok) return;
+    try {
+      await deletePost(post);
+      await invalidate();
+      onDeleted?.();
+    } catch {
+      notify(t('errors.generic'));
+    }
+  };
 
   return (
     <View style={styles.card}>
@@ -52,7 +47,7 @@ export function PostCard({ post, onDeleted }: { post: Post; onDeleted?: () => vo
           </AppText>
         </Pressable>
         {mine ? (
-          <Pressable hitSlop={12} accessibilityLabel={t('post.delete')} onPress={confirmDelete}>
+          <Pressable hitSlop={12} accessibilityLabel={t('post.delete')} onPress={() => void confirmDelete()}>
             <Feather name="more-horizontal" size={22} color={colors.text} />
           </Pressable>
         ) : null}

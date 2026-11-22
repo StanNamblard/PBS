@@ -16,7 +16,6 @@ import { spacing } from '@/theme/tokens';
  */
 export default function TermsScreen() {
   const { t } = useTranslation();
-  const { colors } = useTheme();
   const [terms, setTerms] = useState(false);
   const [privacy, setPrivacy] = useState(false);
   const [rules, setRules] = useState(false);
@@ -36,25 +35,41 @@ export default function TermsScreen() {
       <AppText variant="title">{t('terms.title')}</AppText>
       <AppText muted>{t('terms.subtitle')}</AppText>
       <View style={{ gap: spacing.lg, marginTop: spacing.md }}>
-        <Checkbox testID="accept-terms" checked={terms} onChange={setTerms}>
-          <AppText>{t('terms.acceptTerms')}</AppText>
-          <Link href="/legal/terms">
-            <AppText color={colors.primary}>{t('terms.read')} →</AppText>
-          </Link>
-        </Checkbox>
-        <Checkbox testID="accept-privacy" checked={privacy} onChange={setPrivacy}>
-          <AppText>{t('terms.acceptPrivacy')}</AppText>
-          <Link href="/legal/privacy">
-            <AppText color={colors.primary}>{t('terms.read')} →</AppText>
-          </Link>
-        </Checkbox>
-        <Checkbox testID="accept-rules" checked={rules} onChange={setRules}>
-          <AppText>{t('terms.acceptRules')}</AppText>
-          <Link href="/legal/guidelines">
-            <AppText color={colors.primary}>{t('terms.read')} →</AppText>
-          </Link>
-        </Checkbox>
+        <Consent testID="accept-terms" checked={terms} onChange={setTerms} label={t('terms.acceptTerms')} href="/legal/terms" />
+        <Consent testID="accept-privacy" checked={privacy} onChange={setPrivacy} label={t('terms.acceptPrivacy')} href="/legal/privacy" />
+        <Consent testID="accept-rules" checked={rules} onChange={setRules} label={t('terms.acceptRules')} href="/legal/guidelines" />
       </View>
     </Screen>
+  );
+}
+
+/**
+ * Une case de consentement + le lien vers le document, SÉPARÉS : toucher le
+ * texte coche la case, seul « Lire → » ouvre le document.
+ */
+function Consent({
+  testID,
+  checked,
+  onChange,
+  label,
+  href,
+}: {
+  testID: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+  href: '/legal/terms' | '/legal/privacy' | '/legal/guidelines';
+}) {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  return (
+    <View style={{ gap: spacing.xs }}>
+      <Checkbox testID={testID} checked={checked} onChange={onChange}>
+        <AppText>{label}</AppText>
+      </Checkbox>
+      <Link href={href} style={{ marginLeft: 24 + spacing.md }}>
+        <AppText color={colors.primary}>{t('terms.read')} →</AppText>
+      </Link>
+    </View>
   );
 }

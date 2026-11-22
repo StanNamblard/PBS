@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { Alert } from 'react-native';
 
 import { SmallButton } from '@/components/SmallButton';
+import { confirm } from '@/lib/dialogs';
 
 import { useFollowActions } from './hooks';
 import type { FollowStatus } from './types';
@@ -39,10 +39,12 @@ export function FollowButton({ userId, username, status, followsMe, flex }: Prop
       loading={loading}
       label={status === 'requested' ? t('profile.requested') : t('profile.followingButton')}
       onPress={() =>
-        Alert.alert(status === 'requested' ? t('profile.cancelRequest') : t('profile.unfollowConfirm', { username }), undefined, [
-          { text: t('common.cancel'), style: 'cancel' },
-          { text: confirmLabel, style: 'destructive', onPress: () => unfollow.mutate(userId) },
-        ])
+        void confirm({
+          title: status === 'requested' ? t('profile.cancelRequest') : t('profile.unfollowConfirm', { username }),
+          confirmText: confirmLabel,
+          cancelText: t('common.cancel'),
+          destructive: true,
+        }).then((ok) => ok && unfollow.mutate(userId))
       }
     />
   );

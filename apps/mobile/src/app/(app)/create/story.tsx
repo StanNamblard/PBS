@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/Button';
@@ -14,6 +14,7 @@ import { pickFromLibrary, takePhoto } from '@/features/social/pickImages';
 import { serverErrorKey } from '@/lib/errors';
 import { useTheme } from '@/theme/ThemeProvider';
 import { radius, spacing } from '@/theme/tokens';
+import { notify } from '@/lib/dialogs';
 
 export default function CreateStoryScreen() {
   const { t } = useTranslation();
@@ -25,7 +26,7 @@ export default function CreateStoryScreen() {
 
   const choose = async (source: 'library' | 'camera') => {
     const uris = source === 'library' ? await pickFromLibrary(1) : await takePhoto();
-    if (uris === null) return Alert.alert(t('create.cameraPermission'));
+    if (uris === null) return notify(t('create.cameraPermission'));
     if (uris[0]) setPhoto(uris[0]);
   };
 
@@ -38,7 +39,7 @@ export default function CreateStoryScreen() {
       router.dismissTo('/home');
     } catch (e) {
       const key = serverErrorKey(e);
-      Alert.alert(t(key === 'errors.generic' ? 'errors.upload' : key));
+      notify(t(key === 'errors.generic' ? 'errors.upload' : key));
       setLoading(false);
     }
   };

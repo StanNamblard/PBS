@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, FlatList } from 'react-native';
+import { ActivityIndicator, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
@@ -9,6 +9,7 @@ import { UserRow } from '@/components/UserRow';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { useTheme } from '@/theme/ThemeProvider';
 import { spacing } from '@/theme/tokens';
+import { confirm } from '@/lib/dialogs';
 
 import { FollowButton } from './FollowButton';
 import { useFollowActions, useFollowList, useProfile } from './hooks';
@@ -48,10 +49,12 @@ export function FollowListScreen({ userId, kind }: { userId: string; kind: 'foll
                 <SmallButton
                   label={t('profile.removeFollower')}
                   onPress={() =>
-                    Alert.alert(t('profile.removeFollowerConfirm', { username: item.username }), undefined, [
-                      { text: t('common.cancel'), style: 'cancel' },
-                      { text: t('profile.removeFollower'), style: 'destructive', onPress: () => remove.mutate(item.id) },
-                    ])
+                    void confirm({
+                      title: t('profile.removeFollowerConfirm', { username: item.username }),
+                      confirmText: t('profile.removeFollower'),
+                      cancelText: t('common.cancel'),
+                      destructive: true,
+                    }).then((ok) => ok && remove.mutate(item.id))
                   }
                 />
               ) : (

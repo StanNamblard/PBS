@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
@@ -16,6 +16,7 @@ import { pickFromLibrary, takePhoto } from '@/features/social/pickImages';
 import { serverErrorKey } from '@/lib/errors';
 import { useTheme } from '@/theme/ThemeProvider';
 import { radius, spacing, typography } from '@/theme/tokens';
+import { notify } from '@/lib/dialogs';
 
 export default function CreatePostScreen() {
   const { t } = useTranslation();
@@ -30,7 +31,7 @@ export default function CreatePostScreen() {
 
   const add = async (source: 'library' | 'camera') => {
     const uris = source === 'library' ? await pickFromLibrary(remaining) : await takePhoto();
-    if (uris === null) return Alert.alert(t('create.cameraPermission'));
+    if (uris === null) return notify(t('create.cameraPermission'));
     setPhotos((prev) => [...prev, ...uris].slice(0, POST_MAX_PHOTOS));
   };
 
@@ -43,7 +44,7 @@ export default function CreatePostScreen() {
       router.dismissTo('/home');
     } catch (e) {
       const key = serverErrorKey(e);
-      Alert.alert(t(key === 'errors.generic' ? 'errors.upload' : key));
+      notify(t(key === 'errors.generic' ? 'errors.upload' : key));
       setProgress(null);
     }
   };
