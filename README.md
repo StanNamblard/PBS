@@ -566,7 +566,7 @@ Voir le guide détaillé donné dans la conversation ; résumé :
 ### B. Te nommer administrateur (navigateur)
 SQL Editor → page vide → colle (en remplaçant `ton_pseudo`) → **Run** :
 ```sql
-insert into public.admins (user_id) select id from public.profiles where username = 'ton_pseudo';
+insert into public.admins (user_id) select id from public.profiles where username = 'ton_pseudo' on conflict do nothing;
 ```
 
 ### C. Fonctions serveur (navigateur)
