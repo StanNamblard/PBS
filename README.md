@@ -121,14 +121,73 @@ Si tu as déjà fait la méthode du navigateur, n'utilise pas celle-ci (elle ess
 
 ### 4. Configurer la connexion par email
 
-> 💶 **Cette étape est gratuite** (simples réglages, inclus dans le plan Free) et **obligatoire** : sans elle, l'email reçu contient un lien au lieu d'un code à 6 chiffres, et tu ne pourras pas te connecter dans l'app. Seul le service d'envoi pour de nombreux testeurs (plus tard) pourra être payant.
+But de l'étape : que l'email de connexion contienne un **code à 6 chiffres** (à taper dans l'app) au lieu d'un lien. Sans ça, impossible de se connecter dans l'app.
 
-Dans le tableau de bord Supabase :
+> 💶 **Tout est gratuit.** Supabase bloque la modification des modèles d'emails tant qu'on utilise son service d'envoi par défaut (les champs sont grisés, ou un message demande de configurer un « custom SMTP »). On branche donc d'abord **ta propre adresse Gmail** comme expéditeur : gratuit, jusqu'à ~500 emails par jour, largement assez pour les tests.
 
-1. **Authentication → Sign In / Providers → Email** : vérifie que *Email* est activé. Mets *Email OTP Expiration* à `600` secondes.
-2. **Authentication → Emails → Templates** : pour **Magic Link** *et* **Confirm signup**, remplace le contenu par celui du fichier `supabase/templates/otp.html`. Ainsi l'email contient un **code à 6 chiffres** au lieu d'un lien.
+#### 4.1 Créer un « mot de passe d'application » Gmail
 
-> ⚠️ Le service d'email intégré de Supabase n'envoie que **quelques emails par heure**. C'est suffisant pour tester seul. Avant d'inviter des testeurs, il faudra brancher un service d'envoi (ex. Resend, gratuit jusqu'à 3 000 emails/mois). Je te guiderai.
+C'est un mot de passe spécial de 16 lettres qui permet à Supabase d'envoyer des emails depuis ton adresse Gmail. Ce n'est **pas** ton mot de passe habituel.
+
+1. Il faut que la **validation en 2 étapes** soit activée sur ton compte Google : https://myaccount.google.com/signinoptions/twosv (si ce n'est pas le cas, active-la, avec ton numéro de téléphone).
+2. Va sur https://myaccount.google.com/apppasswords
+3. Dans *Nom de l'application*, tape `Supabase BPS`, puis **Créer**.
+4. Google affiche un code de **16 lettres** (ex. `abcd efgh ijkl mnop`). **Copie-le** (sans les espaces) dans une note : il ne sera plus affiché ensuite.
+
+> Tu n'as pas Gmail, ou la page *apppasswords* est indisponible ? Voir l'alternative **Brevo** en bas de l'étape 4.
+
+#### 4.2 Brancher Gmail dans Supabase
+
+1. Supabase → projet **bps** → **Authentication** (icône 👤 à gauche) → **Emails** → onglet **SMTP Settings**.
+2. Active **Enable custom SMTP**, puis remplis :
+
+   | Champ | Valeur |
+   |---|---|
+   | Sender email | ton adresse Gmail (ex. `ton.nom@gmail.com`) |
+   | Sender name | `BPS` |
+   | Host | `smtp.gmail.com` |
+   | Port number | `587` |
+   | Minimum interval between emails | `30` (ou laisse la valeur proposée) |
+   | Username | ton adresse Gmail (la même) |
+   | Password | le code de 16 lettres de l'étape 4.1 (sans espaces) |
+
+3. Clique sur **Save changes**.
+
+#### 4.3 Changer les modèles d'emails
+
+1. Toujours dans **Authentication → Emails**, onglet **Templates**.
+2. Clique sur **Magic Link**.
+   - *Subject* : `Ton code BPS / Your BPS code`
+   - *Body* (le grand champ, mode *Source* s'il y a le choix) : **efface tout**, puis colle le contenu de ce fichier (bouton **« Copy raw file »** sur GitHub) :
+     https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/templates/otp.html
+   - **Save changes**.
+3. Fais exactement la même chose pour **Confirm signup**.
+
+Le texte important dans ce modèle est `{{ .Token }}` : c'est là que Supabase met le code à 6 chiffres.
+
+#### 4.4 Durée de validité du code
+
+**Authentication → Sign In / Providers** → **Email** : vérifie que le fournisseur *Email* est activé. Si le champ **Email OTP Expiration** est modifiable, mets `600` (10 minutes) puis **Save**. S'il ne l'est pas, ce n'est pas grave : laisse la valeur par défaut.
+
+✅ Étape 4 terminée : au premier essai de connexion dans l'app, tu recevras un email « Ton code BPS » contenant 6 chiffres (regarde aussi dans les spams).
+
+**Ça bloque ?**
+
+| Problème | Solution |
+|---|---|
+| Les modèles restent grisés après 4.2 | Vérifie que **Enable custom SMTP** est bien activé et **enregistré**, puis recharge la page. |
+| Pas de page *apppasswords* chez Google | La validation en 2 étapes n'est pas activée (4.1, point 1), ou c'est un compte Gmail professionnel/scolaire qui l'interdit → utilise Brevo. |
+| L'email n'arrive pas | Regarde dans les spams. Vérifie le mot de passe de 16 lettres (sans espaces). Attends 1 minute entre deux demandes de code. |
+| L'email contient un lien au lieu d'un code | Le modèle n'a pas été enregistré : refais 4.3 pour **Magic Link** et **Confirm signup**. |
+
+<details>
+<summary>Alternative à Gmail : Brevo (gratuit, 300 emails/jour)</summary>
+
+1. Crée un compte sur https://www.brevo.com (plan gratuit).
+2. Menu **Senders, domains & dedicated IPs** → **Senders** → ajoute ton adresse email et valide-la via l'email reçu.
+3. Menu **SMTP & API** → onglet **SMTP** → **Generate a new SMTP key** → copie la clé.
+4. Dans Supabase (4.2) : Host `smtp-relay.brevo.com`, Port `587`, Username = l'identifiant « Login » affiché sur la page SMTP de Brevo, Password = la clé SMTP, Sender email = l'adresse validée au point 2.
+</details>
 
 ### 5. Récupérer le code et le relier à Supabase
 
