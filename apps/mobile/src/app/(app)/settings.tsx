@@ -1,12 +1,19 @@
+import { useQueryClient } from '@tanstack/react-query';
+import * as Clipboard from 'expo-clipboard';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, Switch, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { Screen } from '@/components/Screen';
 import { signOut } from '@/features/auth/api';
+import { useAuth } from '@/features/auth/AuthProvider';
+import { useMyProfile } from '@/features/profile/useMyProfile';
+import { updateMyProfile } from '@/features/social/api';
+import { TextField } from '@/components/TextField';
 import { setAppLanguage, SUPPORTED_LANGUAGES, type LanguageCode } from '@/lib/i18n';
 import { supabase } from '@/lib/supabase';
 import { useTheme, type ThemePreference } from '@/theme/ThemeProvider';
@@ -15,6 +22,22 @@ import { radius, spacing } from '@/theme/tokens';
 export default function SettingsScreen() {
   const { t, i18n } = useTranslation();
   const { colors, preference, setPreference } = useTheme();
+  const { userId } = useAuth();
+  const { data: profile } = useMyProfile();
+  const qc = useQueryClient();
+  const [privateSaving, setPrivateSaving] = useState(false);
+
+  const togglePrivate = async (value: boolean) => {
+    if (!userId) return;
+    setPrivateSaving(true);
+    try {
+      await updateMyProfile(userId, { is_private: value });
+      await qc.invalidateQueries({ queryKey: ['profile'] });
+      await qc.invalidateQueries({ queryKey: ['followRequests'] });
+    } finally {
+      setPrivateSaving(false);
+    }
+  };
 
   const changeLanguage = async (code: LanguageCode) => {
     await setAppLanguage(code);
@@ -34,6 +57,23 @@ export default function SettingsScreen() {
   return (
     <Screen scroll footer={<Button variant="ghost" label={t('common.back')} onPress={() => router.back()} />}>
       <AppText variant="title">{t('settings.title')}</AppText>
+
+      <Section title={t('settings.privacy')}>
+        <View style={styles.switchRow}>
+          <AppText variant="bodyStrong" style={styles.flex}>
+            {t('settings.privateAccount')}
+          </AppText>
+          <Switch
+            value={!!profile?.is_private}
+            disabled={!profile || privateSaving}
+            onValueChange={(v) => void togglePrivate(v)}
+            trackColor={{ true: colors.primary, false: colors.border }}
+          />
+        </View>
+        <AppText variant="caption" muted>
+          {t('settings.privateAccountHint')}
+        </AppText>
+      </Section>
 
       <Section title={t('settings.appearance')}>
         <View style={styles.chips}>
@@ -62,16 +102,58 @@ export default function SettingsScreen() {
       </Section>
 
       <Section title={t('settings.account')}>
-        <Button variant="secondary" label={`${t('settings.exportData')} · ${t('common.phase', { n: 6 })}`} disabled onPress={() => {}} />
-        <Button variant="secondary" label={`${t('settings.deleteAccount')} · ${t('common.phase', { n: 6 })}`} disabled onPress={() => {}} />
+        <Button variant="secondary" label={t('settings.exportData')} disabled onPress={() => {}} />
+        <Button variant="secondary" label={t('settings.deleteAccount')} disabled onPress={() => {}} />
+        <AppText variant="caption" muted center>
+          {t('common.phase', { n: 6 })}
+        </AppText>
         <Button variant="danger" label={t('common.signOut')} onPress={() => void signOut()} />
       </Section>
+
+      {__DEV__ && userId ? <DevTools userId={userId} /> : null}
 
       <AppText variant="caption" muted center>
         {t('settings.version', { v: Constants.expoConfig?.version ?? '?' })}
       </AppText>
       <View style={{ height: spacing.md, backgroundColor: colors.background }} />
     </Screen>
+  );
+}
+
+/**
+ * Outils de test, visibles uniquement en développement (jamais dans l'app
+ * publiée) : tant que le selfie du jour et le QR code n'existent pas, c'est le
+ * seul moyen d'ouvrir le profil d'un ami pour le suivre.
+ */
+function DevTools({ userId }: { userId: string }) {
+  const { t } = useTranslation();
+  const [copied, setCopied] = useState(false);
+  const [target, setTarget] = useState('');
+  const valid = /^[0-9a-f-]{36}$/i.test(target.trim());
+  return (
+    <Section title={t('settings.devTools')}>
+      <AppText variant="caption" muted>
+        {t('settings.myId')}
+      </AppText>
+      <AppText selectable>{userId}</AppText>
+      <Button
+        variant="secondary"
+        label={copied ? t('settings.copied') : t('settings.copy')}
+        onPress={async () => {
+          await Clipboard.setStringAsync(userId);
+          setCopied(true);
+        }}
+      />
+      <TextField
+        label={t('settings.openProfile')}
+        value={target}
+        onChangeText={setTarget}
+        autoCapitalize="none"
+        autoCorrect={false}
+        placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      />
+      <Button variant="secondary" label={t('settings.open')} disabled={!valid} onPress={() => router.push(`/user/${target.trim()}`)} />
+    </Section>
   );
 }
 
@@ -105,6 +187,8 @@ function Chip({ label, selected, onPress }: { label: string; selected: boolean; 
 
 const styles = StyleSheet.create({
   section: { gap: spacing.sm, marginTop: spacing.md },
+  switchRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+  flex: { flex: 1 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   chip: { borderWidth: 1, borderRadius: radius.pill, paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
 });

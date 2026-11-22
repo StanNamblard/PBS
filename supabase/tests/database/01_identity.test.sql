@@ -90,8 +90,8 @@ select throws_ok(
   '23505', 'username_unavailable', 'pseudo déjà pris (insensible à la casse)');
 select is((select count(*)::int from public.user_private where user_id = '11111111-1111-1111-1111-111111111111'), 0,
   'impossible de lire les données privées d''un autre');
-select is((select count(*)::int from public.profiles where username = 'alice_95'), 1,
-  'le profil public d''un utilisateur actif est lisible');
+select is((select count(*)::int from public.profiles where username = 'alice_95'), 0,
+  'pas de lecture directe d''un profil sans relation (anti-aspiration, phase 2)');
 update public.profiles set bio = 'hacked' where id = '11111111-1111-1111-1111-111111111111';
 reset role;
 select is((select bio from public.profiles where id = '11111111-1111-1111-1111-111111111111'), 'Hello',

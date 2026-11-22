@@ -88,21 +88,45 @@
     "profile": "Profile"
   },
   "home": {
-    "title": "Your feed",
-    "empty": "Posts and stories from people you follow will show up here."
+    "title": "BPS",
+    "empty": "Your feed is empty for now. Posts from people you follow will show up here. To meet people: the daily selfie (soon) or the QR code (soon).",
+    "yourStory": "Your story",
+    "create": "Create"
   },
   "selfie": {
     "title": "Daily selfie",
     "cta": "Send a selfie",
     "body": "Take a selfie: it will be swapped with a stranger's, somewhere in the world."
   },
-  "messages": { "title": "Messages" },
-  "qr": { "title": "My QR code" },
+  "messages": {
+    "title": "Messages"
+  },
+  "qr": {
+    "title": "My QR code"
+  },
   "profile": {
     "followers": "Followers",
     "following": "Following",
     "posts": "Posts",
-    "settings": "Settings"
+    "settings": "Settings",
+    "edit": "Edit profile",
+    "follow": "Follow",
+    "followBack": "Follow back",
+    "requested": "Requested",
+    "unfollow": "Unfollow",
+    "unfollowConfirm": "Unfollow @{{username}}?",
+    "cancelRequest": "Cancel request",
+    "followsYou": "Follows you",
+    "privateAccount": "This account is private",
+    "privateHint": "Follow this account to see their photos and stories.",
+    "noPosts": "No posts yet.",
+    "requests": "Follow requests ({{n}})",
+    "notFound": "This profile doesn't exist or is no longer available.",
+    "removeFollower": "Remove",
+    "removeFollowerConfirm": "Remove @{{username}} from your followers? They won't be notified.",
+    "emptyList": "Nobody yet.",
+    "privateList": "This list is private.",
+    "followingButton": "Following ✓"
   },
   "settings": {
     "title": "Settings",
@@ -116,9 +140,17 @@
     "exportData": "Export my data",
     "legal": "Legal",
     "terms": "Terms of Service",
-    "privacy": "Privacy Policy",
+    "privacy": "Privacy",
     "version": "Version {{v}}",
-    "languageNotTranslated": "Translation in progress — English is used in the meantime"
+    "languageNotTranslated": "Translation in progress — English is used in the meantime",
+    "privateAccount": "Private account",
+    "privateAccountHint": "Only people you approve can see your posts, stories and follower lists.",
+    "devTools": "Test tools (development only)",
+    "myId": "My ID",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "openProfile": "Open a profile by ID",
+    "open": "Open"
   },
   "setup": {
     "title": "Missing configuration",
@@ -137,6 +169,57 @@
     "invalid_avatar_path": "Invalid photo",
     "not_authenticated": "Session expired, please sign in again",
     "photoPermission": "Allow photo access in your phone settings",
-    "network": "No internet connection"
+    "network": "No internet connection",
+    "invalid_media_path": "Invalid photo, please try again.",
+    "invalid_media_count": "Between 1 and 10 photos",
+    "caption_too_long": "Caption too long",
+    "user_not_found": "User not found",
+    "cannot_follow_self": "You can't follow yourself",
+    "upload": "Upload failed. Check your connection and try again."
+  },
+  "time": {
+    "now": "just now",
+    "minutes": "{{n}}m",
+    "hours": "{{n}}h",
+    "days": "{{n}}d"
+  },
+  "create": {
+    "title": "Create",
+    "post": "Post",
+    "postHint": "1 to 10 photos with a caption",
+    "story": "Story",
+    "storyHint": "A photo your followers can see for 24h",
+    "fromLibrary": "Choose from library",
+    "fromCamera": "Take a photo",
+    "caption": "Write a caption…",
+    "publish": "Share",
+    "publishing": "Uploading {{done}}/{{total}}…",
+    "addMore": "Add",
+    "photosCount": "{{n}}/10 photos",
+    "cameraPermission": "Allow camera access in your phone settings",
+    "shareStory": "Share story"
+  },
+  "post": {
+    "delete": "Delete post",
+    "deleteConfirm": "Permanently delete this post?",
+    "notFound": "This post no longer exists or isn't visible."
+  },
+  "story": {
+    "views": "{{n}} view(s)",
+    "viewers": "Viewers",
+    "noViewers": "Nobody has seen your story yet.",
+    "delete": "Delete story",
+    "deleteConfirm": "Delete this story?",
+    "expiresIn": "Expires in {{h}}h"
+  },
+  "requests": {
+    "title": "Follow requests",
+    "accept": "Accept",
+    "decline": "Decline",
+    "empty": "No pending requests."
+  },
+  "editProfile": {
+    "title": "Edit profile",
+    "saved": "Profile saved"
   }
 }

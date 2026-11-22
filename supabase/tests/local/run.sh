@@ -21,7 +21,7 @@ done
 
 if [ "${TEST_RESET:-0}" = "1" ]; then
   echo "→ test du script de remise à zéro puis réinstallation"
-  "${PSQL[@]}" -f "$ROOT/reset_phase1.sql" >/dev/null
+  "${PSQL[@]}" -f "$ROOT/reset.sql" >/dev/null
   for f in "$ROOT"/migrations/*.sql; do "${PSQL[@]}" -f "$f" >/dev/null; done
 fi
 
@@ -30,7 +30,7 @@ for t in "$ROOT"/tests/database/*.test.sql; do
   echo "→ test $(basename "$t")"
   OUT="$("${PSQL[@]}" -t -A -f "$t" 2>&1)" || FAIL=1
   echo "$OUT" | grep -E "^(not ok|# )" || true
-  if echo "$OUT" | grep -qE "^not ok|Looks like you failed|ERROR"; then FAIL=1; fi
+  if echo "$OUT" | grep -qE "^not ok|Looks like you (failed|planned)|ERROR"; then FAIL=1; fi
   echo "$OUT" | grep -cE "^ok" | sed 's/^/   tests réussis : /'
 done
 [ "$FAIL" = "0" ] && echo "✅ Tous les tests SQL passent" || { echo "❌ Des tests SQL échouent"; exit 1; }

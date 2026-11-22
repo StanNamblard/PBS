@@ -14,8 +14,8 @@ docs/          Architecture et guides
 | Phase | Contenu | État |
 |---|---|---|
 | 0 | Architecture | ✅ |
-| 1 | Projet, base de données, connexion, contrôle d'âge | ✅ à tester sur ton iPhone |
-| 2 | Profil, publications, stories, follow | ⏳ |
+| 1 | Projet, base de données, connexion, contrôle d'âge | ✅ testé sur iPhone |
+| 2 | Profil, publications, stories, follow, compte privé | ✅ à tester (voir « Mettre à jour vers la phase 2 ») |
 | 3 | Selfie du jour, matching, déblocage, notifications | ⏳ |
 | 4 | QR code | ⏳ |
 | 5 | Messagerie + boîte Demandes | ⏳ |
@@ -51,7 +51,7 @@ Pour taper les commandes : **Terminal** sur Mac, **PowerShell** sur Windows.
 ### 3. Installer la base de données
 
 But de l'étape : créer dans ton projet Supabase les tables (profils, etc.) et les règles de sécurité.
-**Tout se fait dans le navigateur, sans terminal.** Il y a 2 fichiers à copier-coller, **dans l'ordre**.
+**Tout se fait dans le navigateur, sans terminal.** Il y a plusieurs fichiers à copier-coller, **un par un, dans l'ordre** (liste en 3.4).
 
 #### 3.1 Ouvrir l'éditeur SQL de Supabase
 
@@ -73,18 +73,21 @@ But de l'étape : créer dans ton projet Supabase les tables (profils, etc.) et 
 3. Si Supabase affiche une fenêtre d'avertissement du type *« Potential issue detected… destructive operation »*, clique sur **Run this query**. C'est normal : le script contient des instructions de sécurité (« revoke ») que Supabase signale par précaution.
 4. ✅ Résultat attendu : en bas, **« Success. No rows returned »**.
 
-#### 3.4 Copier et exécuter le 2e fichier
+#### 3.4 Copier et exécuter les fichiers suivants
 
-1. Dans Supabase, ouvre une **nouvelle** requête vide (**+**).
-2. Ouvre le 2e fichier sur GitHub et copie-le avec le même bouton :
-   https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261122000100_phase1_storage.sql
-3. Colle-le dans Supabase, puis **Run**.
-4. ✅ Résultat attendu : **« Success. No rows returned »**.
+Pour **chacun** des fichiers ci-dessous, **dans cet ordre** : nouvelle requête vide (**+**) → ouvrir le lien → **« Copy raw file »** → coller dans Supabase → **Run** → attendre **« Success. No rows returned »**.
+
+| # | Fichier | Phase |
+|---|---|---|
+| 1 | [20261122000000_phase1_identity.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261122000000_phase1_identity.sql) | 1 (déjà fait en 3.2–3.3) |
+| 2 | [20261122000100_phase1_storage.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261122000100_phase1_storage.sql) | 1 |
+| 3 | [20261123000000_phase2_social.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261123000000_phase2_social.sql) | 2 |
+| 4 | [20261123000100_phase2_storage.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261123000100_phase2_storage.sql) | 2 |
 
 #### 3.5 Vérifier que tout est en place
 
-- Menu de gauche → **Table Editor** : tu dois voir 4 tables : `age_gate_rejections`, `age_verifications`, `profiles` et `user_private` (vides, c'est normal).
-- Menu de gauche → **Storage** : tu dois voir un dossier (*bucket*) `avatars` marqué *Public*.
+- Menu de gauche → **Table Editor** : tu dois voir les tables `age_gate_rejections`, `age_verifications`, `follows`, `post_media`, `posts`, `profiles`, `stories`, `story_views` et `user_private`.
+- Menu de gauche → **Storage** : tu dois voir 3 dossiers (*buckets*) : `avatars` (*Public*), `posts` et `stories` (privés).
 
 Si c'est le cas, passe à l'étape 4 🎉
 
@@ -98,8 +101,8 @@ Si c'est le cas, passe à l'étape 4 🎉
 | `404` / page introuvable sur GitHub | Tu n'es pas connecté à GitHub avec le compte qui a accès au projet. | Se connecter sur github.com, puis rouvrir le lien. |
 
 **Remise à zéro** (seulement en cas d'erreur `already exists`) : dans Supabase, nouvelle requête vide, colle ce fichier puis **Run** :
-https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/reset_phase1.sql
-Il efface uniquement ce que les deux fichiers ont créé. Recommence ensuite à l'étape 3.2.
+https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/reset.sql
+⚠️ Il efface **toutes les données de l'app** (profils, publications…), mais pas les comptes email. Recommence ensuite à l'étape 3.2 et réexécute **tous** les fichiers dans l'ordre.
 
 > Toujours bloqué ? Envoie-moi une **capture d'écran du message d'erreur** (en bas de l'éditeur SQL) : je saurai exactement quoi faire.
 
@@ -361,6 +364,50 @@ puis scanne le QR code. (Quand je livre une nouvelle phase : `git pull` puis `np
 5. Profil → ⚙️ Paramètres : thème clair/sombre/système, langue, déconnexion.
 
 > « Continuer avec Apple » n'apparaît pas dans Expo Go : il faut un build de développement, donc le compte Apple Developer (voir plus bas). Google viendra avec le même build.
+
+---
+
+## Mettre à jour vers la phase 2 (si la phase 1 est déjà installée)
+
+À faire **une fois** par nouvelle phase. Compte 10 minutes.
+
+### A. Mettre à jour la base de données (navigateur)
+
+Comme à l'étape 3 : Supabase → **SQL Editor** → pour **chaque** fichier ci-dessous, dans l'ordre : nouvelle requête vide (**+**) → **« Copy raw file »** sur GitHub → coller → **Run** → **« Success. No rows returned »**.
+
+1. [20261123000000_phase2_social.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261123000000_phase2_social.sql)
+2. [20261123000100_phase2_storage.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261123000100_phase2_storage.sql)
+
+✅ Vérification : **Storage** affiche maintenant `avatars`, `posts` et `stories`.
+⚠️ **N'exécute pas** à nouveau les fichiers de la phase 1 (erreur *already exists*). Si c'est arrivé : ce n'est pas grave, il suffit d'exécuter les 2 fichiers ci-dessus.
+
+### B. Mettre à jour l'app (terminal)
+
+Si l'app tourne, arrête-la avec **Ctrl + C**, puis :
+
+```bash
+cd ~/Desktop/PBS
+git pull
+cd apps/mobile
+npm install
+npx expo start
+```
+
+(Méthode ZIP : retélécharge le ZIP, remplace le dossier, **recopie ton fichier `.env`** dans `apps/mobile`, puis `npm install` et `npx expo start`.)
+
+### C. Tester la phase 2
+
+Pour tester les abonnements, il faut **2 comptes sur 2 téléphones** (toi et ton pote), chacun avec Expo Go, l'ordinateur faisant tourner l'app pour les deux (même Wi-Fi, ou `npx expo start --tunnel`).
+
+1. **Publier** : Accueil → icône **＋** en haut à droite → *Publication* → choisis 1 à 10 photos → légende → **Publier**. Elle apparaît dans ton fil et sur ton profil.
+2. **Story** : Accueil → rond **Ta story** (avec le ＋) → photo → **Partager la story**. Touche à nouveau ton rond pour la voir : en bas, le nombre de vues 👁 et la corbeille.
+3. **Se trouver entre amis** (en attendant le selfie du jour et le QR code) : Profil → ⚙️ → tout en bas **Outils de test** → **Copier** ton identifiant → envoie-le à ton pote (SMS, WhatsApp…) → il le colle dans **Ouvrir un profil par identifiant** → **Ouvrir**. *(Ces outils n'existeront pas dans l'app publiée.)*
+4. **Suivre** : sur le profil ouvert → **Suivre**. Les compteurs se mettent à jour ; les publications et la story de l'autre apparaissent dans ton fil (tire vers le bas pour rafraîchir).
+5. **Story vue** : quand ton pote regarde ta story, son pseudo apparaît dans la liste 👁 de ta story.
+6. **Compte privé** : Profil → ⚙️ → active **Compte privé**. Ton pote se désabonne puis appuie de nouveau sur **Suivre** → le bouton affiche **Demandé** et il ne voit plus tes photos. Chez toi, sur ton Profil : **Demandes d'abonnement (1)** → **Accepter**.
+7. **Listes** : touche *Abonnés* / *Abonnements* sur un profil. Sur tes propres abonnés, **Retirer** enlève quelqu'un.
+8. **Supprimer** : sur ta publication → **⋯** → *Supprimer*.
+9. **Modifier le profil** : Profil → **Modifier le profil** (photo, pseudo, bio, pays).
 
 ---
 

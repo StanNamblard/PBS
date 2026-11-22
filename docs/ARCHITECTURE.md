@@ -20,6 +20,13 @@
 | 11 | Appareil de test | **iPhone** (Expo Go jusqu'à la phase 2, build de développement à partir de la phase 3) |
 | 12 | Budget | ~**100 €/mois** au départ |
 
+Choix faits en phase 2 :
+- **Anti-aspiration des profils** : la lecture directe de la table `profiles` est limitée à soi-même et à ses relations (follow dans un sens ou l'autre). Les autres profils ne s'ouvrent que par identifiant via `get_profile()` (match, QR, listes). Aucune recherche par pseudo n'existe.
+- **Compte privé** : un follow devient une demande ; contenus et listes d'abonnés masqués aux non-abonnés ; repasser en public accepte toutes les demandes en attente.
+- **Photos de publications et stories** : buckets privés, URLs signées 1 h, délivrées seulement si l'utilisateur a le droit de voir le contenu (politique `select` de Storage). Les fichiers d'une story expirée ne sont plus lisibles.
+- **Modération** : colonne `moderation` déjà présente (`approved` par défaut) ; la phase 6 fera passer les nouvelles photos en `pending` jusqu'à l'analyse automatique.
+- **À faire en phase 3** : suppression physique des fichiers de stories expirées (tâche planifiée côté serveur, mise en place avec celle des selfies 24 h).
+
 Autres choix techniques faits en phase 1 :
 - **Avatars** : bucket en lecture publique, noms de fichiers aléatoires (pour la mise en cache). Selfies, posts, stories et photos de DM restent **privés** (URLs signées).
 - **Date de naissance** : saisie neutre (aucune date pré-remplie), **non modifiable**. Un refus < 18 ans bloque le compte définitivement **et** l'appareil.

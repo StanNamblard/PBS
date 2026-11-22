@@ -13,6 +13,11 @@ const KNOWN_CODES = [
   'terms_required',
   'invalid_avatar_path',
   'not_authenticated',
+  'invalid_media_path',
+  'invalid_media_count',
+  'caption_too_long',
+  'user_not_found',
+  'cannot_follow_self',
 ] as const;
 
 export type ServerErrorCode = (typeof KNOWN_CODES)[number];

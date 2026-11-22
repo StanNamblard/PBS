@@ -88,21 +88,45 @@
     "profile": "Profil"
   },
   "home": {
-    "title": "Ton fil",
-    "empty": "Le fil et les stories des personnes que tu suis apparaîtront ici."
+    "title": "BPS",
+    "empty": "Ton fil est vide pour l'instant. Les publications des personnes que tu suis apparaîtront ici. Pour rencontrer du monde : le selfie du jour (bientôt) ou le QR code (bientôt).",
+    "yourStory": "Ta story",
+    "create": "Créer"
   },
   "selfie": {
     "title": "Selfie du jour",
     "cta": "Envoyer un selfie",
     "body": "Prends un selfie, il sera échangé avec celui d'un inconnu quelque part dans le monde."
   },
-  "messages": { "title": "Messages" },
-  "qr": { "title": "Mon QR code" },
+  "messages": {
+    "title": "Messages"
+  },
+  "qr": {
+    "title": "Mon QR code"
+  },
   "profile": {
     "followers": "Abonnés",
     "following": "Abonnements",
     "posts": "Publications",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "edit": "Modifier le profil",
+    "follow": "Suivre",
+    "followBack": "Suivre en retour",
+    "requested": "Demandé",
+    "unfollow": "Ne plus suivre",
+    "unfollowConfirm": "Ne plus suivre @{{username}} ?",
+    "cancelRequest": "Annuler la demande",
+    "followsYou": "Te suit",
+    "privateAccount": "Ce compte est privé",
+    "privateHint": "Suis ce compte pour voir ses photos et ses stories.",
+    "noPosts": "Aucune publication pour l'instant.",
+    "requests": "Demandes d'abonnement ({{n}})",
+    "notFound": "Ce profil n'existe pas ou n'est plus disponible.",
+    "removeFollower": "Retirer",
+    "removeFollowerConfirm": "Retirer @{{username}} de tes abonnés ? Cette personne ne sera pas prévenue.",
+    "emptyList": "Personne pour l'instant.",
+    "privateList": "Cette liste est privée.",
+    "followingButton": "Abonné ✓"
   },
   "settings": {
     "title": "Paramètres",
@@ -116,9 +140,17 @@
     "exportData": "Exporter mes données",
     "legal": "Informations légales",
     "terms": "Conditions d'utilisation",
-    "privacy": "Politique de confidentialité",
+    "privacy": "Confidentialité",
     "version": "Version {{v}}",
-    "languageNotTranslated": "Traduction en cours — l'anglais est utilisé en attendant"
+    "languageNotTranslated": "Traduction en cours — l'anglais est utilisé en attendant",
+    "privateAccount": "Compte privé",
+    "privateAccountHint": "Seules les personnes que tu acceptes voient tes publications, tes stories et tes listes d'abonnés.",
+    "devTools": "Outils de test (développement uniquement)",
+    "myId": "Mon identifiant",
+    "copy": "Copier",
+    "copied": "Copié !",
+    "openProfile": "Ouvrir un profil par identifiant",
+    "open": "Ouvrir"
   },
   "setup": {
     "title": "Configuration manquante",
@@ -137,6 +169,57 @@
     "invalid_avatar_path": "Photo invalide",
     "not_authenticated": "Session expirée, reconnecte-toi",
     "photoPermission": "Autorise l'accès aux photos dans les réglages de ton téléphone",
-    "network": "Pas de connexion internet"
+    "network": "Pas de connexion internet",
+    "invalid_media_path": "Photo invalide, réessaie.",
+    "invalid_media_count": "Entre 1 et 10 photos",
+    "caption_too_long": "Légende trop longue",
+    "user_not_found": "Utilisateur introuvable",
+    "cannot_follow_self": "Tu ne peux pas te suivre toi-même",
+    "upload": "L'envoi a échoué. Vérifie ta connexion et réessaie."
+  },
+  "time": {
+    "now": "à l'instant",
+    "minutes": "{{n}} min",
+    "hours": "{{n}} h",
+    "days": "{{n}} j"
+  },
+  "create": {
+    "title": "Créer",
+    "post": "Publication",
+    "postHint": "1 à 10 photos avec une légende",
+    "story": "Story",
+    "storyHint": "Une photo visible 24 h par tes abonnés",
+    "fromLibrary": "Choisir dans la galerie",
+    "fromCamera": "Prendre une photo",
+    "caption": "Écris une légende…",
+    "publish": "Publier",
+    "publishing": "Envoi {{done}}/{{total}}…",
+    "addMore": "Ajouter",
+    "photosCount": "{{n}}/10 photos",
+    "cameraPermission": "Autorise l'appareil photo dans les réglages de ton téléphone",
+    "shareStory": "Partager la story"
+  },
+  "post": {
+    "delete": "Supprimer la publication",
+    "deleteConfirm": "Supprimer définitivement cette publication ?",
+    "notFound": "Cette publication n'existe plus ou n'est pas visible."
+  },
+  "story": {
+    "views": "{{n}} vue(s)",
+    "viewers": "Vues",
+    "noViewers": "Personne n'a encore vu ta story.",
+    "delete": "Supprimer la story",
+    "deleteConfirm": "Supprimer cette story ?",
+    "expiresIn": "Expire dans {{h}} h"
+  },
+  "requests": {
+    "title": "Demandes d'abonnement",
+    "accept": "Accepter",
+    "decline": "Refuser",
+    "empty": "Aucune demande en attente."
+  },
+  "editProfile": {
+    "title": "Modifier le profil",
+    "saved": "Profil enregistré"
   }
 }
