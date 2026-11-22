@@ -387,11 +387,16 @@ Si l'app tourne, arrête-la avec **Ctrl + C**, puis :
 
 ```bash
 cd ~/Desktop/PBS
+git checkout -- .
 git pull
 cd apps/mobile
-npm install
-npx expo start
+npm ci
+npx expo start -c
 ```
+
+- `git checkout -- .` annule les petites modifications automatiques faites par l'installation précédente (sinon `git pull` refuse avec *« Your local changes … would be overwritten »*). Ton fichier `.env` n'est **pas** touché.
+- `npm ci` installe exactement les versions prévues, sans rien modifier (évite ce problème la fois suivante).
+- `-c` vide le cache pour être sûr de voir la nouvelle version. Sur l'iPhone, si l'ancienne version s'affiche encore : secoue le téléphone → **Reload**.
 
 (Méthode ZIP : retélécharge le ZIP, remplace le dossier, **recopie ton fichier `.env`** dans `apps/mobile`, puis `npm install` et `npx expo start`.)
 
