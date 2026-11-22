@@ -280,15 +280,68 @@ Ce fichier contient tes 2 valeurs. Il commence par un point : il est donc **invi
 
 ### 6. Lancer l'app
 
-Dans le terminal, depuis le dossier `PBS/apps/mobile` (là où l'étape 5 t'a laissé ; sinon : `cd ~/Desktop/PBS/apps/mobile`) :
+But de l'étape : démarrer l'app sur ton ordinateur et l'ouvrir sur ton iPhone grâce à **Expo Go**. Il y a 4 parties.
 
+#### 6.1 Vérifier que Node.js est installé
+
+Dans le terminal, tape puis Entrée :
 ```bash
-npm install          # la première fois seulement (quelques minutes)
-npx expo start
+node -v
+```
+✅ Attendu : un numéro de version, par exemple `v22.12.0` (il faut **20 ou plus**).
+❌ Si tu vois `command not found` / `n'est pas reconnu` ou une version inférieure à 20 : installe la version **LTS** depuis https://nodejs.org (bouton vert, options par défaut), puis **ferme et rouvre** le terminal et retourne dans le dossier :
+```bash
+cd ~/Desktop/PBS/apps/mobile
 ```
 
-Un QR code s'affiche dans le terminal. Ouvre l'app **Appareil photo** de l'iPhone, vise le QR code, puis touche la bannière : l'app s'ouvre dans Expo Go.
-(L'ordinateur et l'iPhone doivent être sur le même Wi-Fi. Sinon : `npx expo start --tunnel`.)
+#### 6.2 Installer les composants de l'app (la première fois seulement)
+
+Vérifie que tu es dans le bon dossier : tape `ls` (Mac) ou `dir` (Windows). Tu dois voir `app.json` et `package.json`. Sinon : `cd ~/Desktop/PBS/apps/mobile`.
+
+Puis tape :
+```bash
+npm install
+```
+⏳ Ça dure **2 à 5 minutes**, beaucoup de lignes défilent.
+✅ C'est fini quand le terminal te rend la main (tu peux de nouveau taper). Les messages `warn`, `deprecated` ou `vulnerabilities` sont **normaux** : ignore-les, **ne lance pas** `npm audit fix`.
+
+#### 6.3 Démarrer l'app
+
+```bash
+npx expo start
+```
+- Si on te demande `Need to install the following packages ... Ok to proceed? (y)` → tape `y` puis Entrée.
+- ✅ Après quelques secondes, un **grand QR code** s'affiche dans le terminal, avec en dessous `Metro waiting on exp://...`.
+- **Laisse ce terminal ouvert** tant que tu utilises l'app : c'est lui qui la fait tourner. Pour l'arrêter : **Ctrl + C**.
+
+#### 6.4 Ouvrir l'app sur ton iPhone
+
+1. Installe **Expo Go** depuis l'App Store (gratuit) si ce n'est pas déjà fait.
+2. Vérifie que l'iPhone est sur le **même Wi-Fi** que l'ordinateur (pas en 4G/5G).
+3. Ouvre l'app **Appareil photo** de l'iPhone (l'appareil photo normal, pas Expo Go) et vise le QR code du terminal.
+4. Une bannière jaune **« Ouvrir dans Expo Go »** apparaît : touche-la.
+5. Si l'iPhone demande l'autorisation d'accéder au **réseau local** → **Autoriser**.
+6. ⏳ La première ouverture prend jusqu'à **1 minute** (une barre de chargement s'affiche).
+7. ✅ L'écran noir **« BPS — Un selfie. Un inconnu. Chaque jour. »** apparaît. Passe à l'étape 7 !
+
+**Ça bloque ?**
+
+| Problème | Solution |
+|---|---|
+| Windows : `l'exécution de scripts est désactivée sur ce système` | Tape `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, réponds `O` (ou `Y`), puis relance la commande. |
+| `npm install` affiche `ERR!` et s'arrête | Supprime le dossier `node_modules` s'il existe, vérifie `node -v` (20 ou plus), relance `npm install`. Si ça persiste, envoie-moi une capture des dernières lignes. |
+| L'iPhone ne trouve pas l'app / « Could not connect to the server » / chargement sans fin | Arrête avec **Ctrl + C**, puis lance `npx expo start --tunnel`. Si on te propose d'installer `@expo/ngrok` → `y`. Rescanne le nouveau QR code. (Utile aussi sur un Wi-Fi d'entreprise, d'école ou de box qui isole les appareils.) |
+| La bannière n'apparaît pas en scannant | Ouvre **Expo Go** → onglet *Home* → **Scan QR code**, ou tape à la main dans Expo Go l'adresse `exp://...` affichée dans le terminal. |
+| Expo Go dit que le projet utilise un **SDK incompatible** | Mets à jour Expo Go dans l'App Store, puis réessaie. Sinon envoie-moi une capture. |
+| L'app affiche **« Configuration manquante »** | Le fichier `.env` (étape 5.3) est absent ou mal rempli. Corrige-le, **Ctrl + C**, puis `npx expo start` à nouveau. |
+| Écran rouge avec une erreur | Envoie-moi une capture de l'écran : je corrige. |
+
+**Les fois suivantes**, pas besoin de tout refaire : ouvre un terminal et tape
+```bash
+cd ~/Desktop/PBS/apps/mobile
+npx expo start
+```
+puis scanne le QR code. (Quand je livre une nouvelle phase : `git pull` puis `npm install` avant `npx expo start`.)
 
 ### 7. Ce que tu peux tester
 
