@@ -20,6 +20,9 @@
 | 11 | Appareil de test | **iPhone** (Expo Go jusqu'à la phase 2, build de développement à partir de la phase 3) |
 | 12 | Budget | ~**100 €/mois** au départ |
 
+Évolution demandée après la phase 6 :
+- **Visage facultatif** : la photo du jour reste prise **en direct** (jamais depuis la galerie) mais peut venir de la caméra **avant**, **arrière** ou des **deux** (mode « Double » : arrière puis avant à moins d'une seconde d'écart, assemblées en une image côté téléphone avec react-native-view-shot). Plus aucune détection de visage dans la modération. Objectif : n'exclure personne (ex. personnes portant le voile intégral, personnes qui ne veulent pas se montrer).
+
 Choix faits en phase 6 :
 - **Modération** : Edge Function `moderate-image` (Sightengine : nudity-2.1, gore-2.0, offensive-2.0, faces pour les selfies) → `moderation_results` (approved / review / rejected). Des **déclencheurs** sur post_media, stories, selfie_submissions, messages et profiles (avatar) appliquent le verdict côté serveur. `review` : publication/story « pending » (file admin) ; refus pour selfie, message, avatar. Interrupteur `app_config.moderation_enforced` (false par défaut).
 - **Back-office dans l'app** : table `admins`, fonctions `admin_*` vérifiant `is_admin()` côté serveur ; actions tracées (`moderation_actions`) ; motif envoyé à l'utilisateur (DSA). Suspension automatique : 3 signaleurs distincts (nudité / mineur / violence) ou 5 tous motifs en 24 h.

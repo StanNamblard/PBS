@@ -92,7 +92,7 @@ BPS is built on a simple idea: sharing an authentic moment with someone, somewhe
 
 ## Always
 - Respect others, even people you don't follow.
-- Be authentic: your real face, your real moment.
+- Be authentic: your real moment, taken live. Showing your face is never required.
 - Report anything that makes you uncomfortable. It's anonymous.
 
 ## Never

@@ -42,11 +42,6 @@ function decide(result: Record<string, any>, bucket: string): { decision: Decisi
   if (erotica >= 0.8) return { decision: 'rejected', reason: 'nudity' };
   if (gore >= 0.8) return { decision: 'rejected', reason: 'gore' };
 
-  // Selfie : il faut un visage (authenticité du jeu)
-  if (bucket === 'selfies' && Array.isArray(result.faces) && result.faces.length === 0) {
-    return { decision: 'rejected', reason: 'no_face' };
-  }
-
   if (erotica >= 0.5 || verySuggestive >= 0.8) return { decision: 'review', reason: 'suggestive' };
   if (gore >= 0.5) return { decision: 'review', reason: 'gore' };
   if (offensive >= 0.6) return { decision: 'review', reason: 'offensive' };
@@ -88,7 +83,9 @@ Deno.serve(async (req) => {
 
       const form = new FormData();
       form.append('media', file, 'photo.jpg');
-      form.append('models', bucket === 'selfies' ? 'nudity-2.1,gore-2.0,offensive-2.0,faces' : 'nudity-2.1,gore-2.0,offensive-2.0');
+      // Pas de détection de visage : montrer son visage n'est PAS obligatoire
+      // (caméra arrière, mode double, personnes qui ne souhaitent pas se montrer…)
+      form.append('models', 'nudity-2.1,gore-2.0,offensive-2.0');
       form.append('api_user', apiUser);
       form.append('api_secret', apiSecret);
       const res = await fetch('https://api.sightengine.com/1.0/check.json', { method: 'POST', body: form });
@@ -102,7 +99,7 @@ Deno.serve(async (req) => {
         if (decision === 'review' && STRICT_BUCKETS.has(bucket)) decision = 'rejected';
       }
       provider = 'sightengine';
-      scores = { nudity: result.nudity, gore: result.gore, offensive: result.offensive, faces: Array.isArray(result.faces) ? result.faces.length : undefined };
+      scores = { nudity: result.nudity, gore: result.gore, offensive: result.offensive };
     }
 
     // 4. Enregistre le verdict (la base de données s'en sert pour autoriser ou non la photo)

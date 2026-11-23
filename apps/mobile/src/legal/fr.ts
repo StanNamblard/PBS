@@ -93,7 +93,7 @@ BPS repose sur une idée simple : partager un moment authentique avec quelqu'un,
 
 ## Toujours
 - Respecte les autres, même quand tu ne les suis pas.
-- Sois authentique : ton vrai visage, ton vrai moment.
+- Sois authentique : ton vrai moment, pris en direct. Montrer ton visage n'est jamais obligatoire.
 - Signale ce qui te met mal à l'aise. C'est anonyme.
 
 ## Jamais

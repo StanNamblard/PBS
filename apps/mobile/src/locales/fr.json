@@ -96,7 +96,7 @@
   "selfie": {
     "title": "Selfie du jour",
     "cta": "Prendre mon selfie",
-    "body": "Prends un selfie : il sera échangé avec celui d'un inconnu, quelque part dans le monde. Les deux se révèlent en même temps.",
+    "body": "Prends ta photo du moment (caméra avant, arrière ou les deux) : elle sera échangée avec celle d'un inconnu, quelque part dans le monde. Les deux se révèlent en même temps.",
     "nextWave": "Prochaine vague : {{when}}",
     "today": "aujourd'hui à {{time}}",
     "tomorrow": "demain à {{time}}",
@@ -106,7 +106,6 @@
     "expiresAt": "Visible jusqu'à {{time}}",
     "reminderTitle": "📸 C'est l'heure du selfie !",
     "reminderBody": "Un inconnu t'attend quelque part dans le monde.",
-    "frontOnly": "Caméra frontale uniquement, pas de retouche : c'est ça, le jeu.",
     "cameraPermissionTitle": "Accès à la caméra",
     "cameraPermissionBody": "BPS a besoin de ta caméra frontale pour prendre ton selfie.",
     "allowCamera": "Autoriser la caméra",
@@ -127,7 +126,13 @@
     "selfie_already_pending": "Tu as déjà un selfie en attente.",
     "dailyReminder": "Rappel de la vague quotidienne",
     "dailyReminderHint": "Une notification par jour, à la même heure pour tout ton coin du monde.",
-    "notificationsBlocked": "Les notifications sont désactivées pour BPS dans les réglages de ton téléphone."
+    "notificationsBlocked": "Les notifications sont désactivées pour BPS dans les réglages de ton téléphone.",
+    "mode_front": "Avant",
+    "mode_back": "Arrière",
+    "mode_dual": "Double",
+    "flip": "Changer de caméra",
+    "liveOnly": "Toujours en direct, jamais depuis la galerie : c'est ça, le jeu. Visage facultatif.",
+    "dualHint": "Double : l'app prend la caméra arrière puis la caméra avant, et les assemble."
   },
   "messages": {
     "title": "Messages",

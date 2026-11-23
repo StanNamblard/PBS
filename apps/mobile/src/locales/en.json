@@ -96,7 +96,7 @@
   "selfie": {
     "title": "Daily selfie",
     "cta": "Take my selfie",
-    "body": "Take a selfie: it'll be swapped with a stranger's, somewhere in the world. Both are revealed at the same time.",
+    "body": "Take your photo of the moment (front, back or both cameras): it'll be swapped with a stranger's, somewhere in the world. Both are revealed at the same time.",
     "nextWave": "Next wave: {{when}}",
     "today": "today at {{time}}",
     "tomorrow": "tomorrow at {{time}}",
@@ -106,7 +106,6 @@
     "expiresAt": "Visible until {{time}}",
     "reminderTitle": "📸 Selfie time!",
     "reminderBody": "A stranger is waiting for you somewhere in the world.",
-    "frontOnly": "Front camera only, no filters: that's the game.",
     "cameraPermissionTitle": "Camera access",
     "cameraPermissionBody": "BPS needs your front camera to take your selfie.",
     "allowCamera": "Allow camera",
@@ -127,7 +126,13 @@
     "selfie_already_pending": "You already have a selfie waiting.",
     "dailyReminder": "Daily wave reminder",
     "dailyReminderHint": "One notification a day, at the same time for your whole part of the world.",
-    "notificationsBlocked": "Notifications are turned off for BPS in your phone settings."
+    "notificationsBlocked": "Notifications are turned off for BPS in your phone settings.",
+    "mode_front": "Front",
+    "mode_back": "Back",
+    "mode_dual": "Dual",
+    "flip": "Switch camera",
+    "liveOnly": "Always live, never from your gallery: that's the game. Face optional.",
+    "dualHint": "Dual: the app takes the back camera then the front camera, and combines them."
   },
   "messages": {
     "title": "Messages",
