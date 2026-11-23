@@ -16,6 +16,7 @@ import { Button } from '@/components/Button';
 import { Screen } from '@/components/Screen';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { getPendingSelfie, newRequestId, sendSelfie } from '@/features/selfie/api';
+import { composeDual } from '@/features/selfie/composeDual';
 import { notify } from '@/lib/dialogs';
 import { serverErrorKey } from '@/lib/errors';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -117,17 +118,14 @@ export default function SelfieCameraScreen() {
     if (!shot || !userId) return;
     setSending(true);
     try {
-      // Mode Double : on « photographie » l'assemblage affiché pour n'envoyer qu'une image
-      const uri = shot.inset && composite.current
-        ? await captureRef(composite as never, {
-            format: 'jpg',
-            quality: 0.9,
-            width: 1080,
-            height: 1440,
-            // Sur le web, pas de fichier temporaire : l'image est renvoyée directement (data-uri)
-            result: Platform.OS === 'web' ? 'data-uri' : 'tmpfile',
-          })
-        : shot.main;
+      // Mode Double : une seule image assemblée (canvas sur le web, capture de la vue sur mobile)
+      let uri = shot.main;
+      if (shot.inset) {
+        uri =
+          Platform.OS === 'web'
+            ? await composeDual(shot.main, shot.inset)
+            : await captureRef(composite as never, { format: 'jpg', quality: 0.9, width: 1080, height: 1440 });
+      }
       const state = await sendSelfie(userId, uri, shot.requestId);
       await qc.invalidateQueries({ queryKey: ['selfie'] });
       if (state.status === 'matched' && state.match_id) {
