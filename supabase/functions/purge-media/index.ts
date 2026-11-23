@@ -11,9 +11,30 @@
 // =============================================================================
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
+/**
+ * Clé « serveur » (droits complets, jamais envoyée à l'app).
+ * Les anciens projets Supabase fournissent SUPABASE_SERVICE_ROLE_KEY ; les
+ * projets récents fournissent SUPABASE_SECRET_KEYS (JSON : {"default": "sb_secret_..."}).
+ */
+function serverKey(): string {
+  const legacy = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if (legacy) return legacy;
+  const raw = Deno.env.get('SUPABASE_SECRET_KEYS');
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw) as Record<string, string>;
+      const key = parsed.default ?? Object.values(parsed)[0];
+      if (key) return key;
+    } catch {
+      /* format inattendu */
+    }
+  }
+  throw new Error('server_key_missing: ni SUPABASE_SERVICE_ROLE_KEY ni SUPABASE_SECRET_KEYS');
+}
+
 Deno.serve(async () => {
-  // Clé "service_role" : fournie automatiquement par Supabase aux Edge Functions.
-  const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {
+  // Clé serveur : fournie automatiquement par Supabase aux Edge Functions.
+  const supabase = createClient(Deno.env.get('SUPABASE_URL')!, serverKey(), {
     auth: { persistSession: false },
   });
 
@@ -46,7 +67,7 @@ Deno.serve(async () => {
   for (const { user_id } of (accounts ?? []) as { user_id: string }[]) {
     for (const bucket of ['avatars', 'posts', 'stories', 'selfies', 'dm']) {
       const { data: files } = await supabase.storage.from(bucket).list(user_id, { limit: 1000 });
-      const paths = (files ?? []).map((f) => `${user_id}/${f.name}`);
+      const paths = (files ?? []).map((f: { name: string }) => `${user_id}/${f.name}`);
       for (let i = 0; i < paths.length; i += 100) {
         await supabase.storage.from(bucket).remove(paths.slice(i, i + 100));
       }

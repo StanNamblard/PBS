@@ -18,6 +18,27 @@
 // =============================================================================
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
+/**
+ * Clé « serveur » (droits complets, jamais envoyée à l'app).
+ * Les anciens projets Supabase fournissent SUPABASE_SERVICE_ROLE_KEY ; les
+ * projets récents fournissent SUPABASE_SECRET_KEYS (JSON : {"default": "sb_secret_..."}).
+ */
+function serverKey(): string {
+  const legacy = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if (legacy) return legacy;
+  const raw = Deno.env.get('SUPABASE_SECRET_KEYS');
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw) as Record<string, string>;
+      const key = parsed.default ?? Object.values(parsed)[0];
+      if (key) return key;
+    } catch {
+      /* format inattendu */
+    }
+  }
+  throw new Error('server_key_missing: ni SUPABASE_SERVICE_ROLE_KEY ni SUPABASE_SECRET_KEYS');
+}
+
 const BUCKETS = new Set(['avatars', 'posts', 'stories', 'selfies', 'dm']);
 // Pour ces usages, une photo « douteuse » est refusée (pas de file d'attente possible)
 const STRICT_BUCKETS = new Set(['avatars', 'selfies', 'dm']);
@@ -54,17 +75,20 @@ function decide(result: Record<string, any>, bucket: string): { decision: Decisi
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
-  const json = (body: unknown, status = 200) =>
-    Response.json(body, { status, headers: cors });
+  // Toute erreur est écrite dans les Logs de la fonction (onglet « Logs » dans Supabase)
+  const json = (body: unknown, status = 200) => {
+    if (status >= 400) console.error('[moderate-image]', status, JSON.stringify(body));
+    return Response.json(body, { status, headers: cors });
+  };
 
   try {
     const url = Deno.env.get('SUPABASE_URL')!;
-    const admin = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
+    const admin = createClient(url, serverKey(), { auth: { persistSession: false } });
 
     // 1. Qui appelle ? (session de l'utilisateur)
     const jwt = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
     const { data: userData, error: userError } = await admin.auth.getUser(jwt);
-    if (userError || !userData.user) return json({ error: 'not_authenticated' }, 401);
+    if (userError || !userData.user) return json({ error: 'not_authenticated', step: 'auth', detail: userError?.message }, 401);
     const userId = userData.user.id;
 
     // 2. Quelle photo ? Elle doit être dans SON dossier
@@ -83,7 +107,7 @@ Deno.serve(async (req) => {
 
     if (apiUser && apiSecret) {
       const { data: file, error: dlError } = await admin.storage.from(bucket).download(path);
-      if (dlError || !file) return json({ error: 'file_not_found' }, 404);
+      if (dlError || !file) return json({ error: 'file_not_found', step: 'download', detail: dlError?.message }, 404);
 
       const form = new FormData();
       form.append('media', file, 'photo.jpg');
@@ -93,7 +117,16 @@ Deno.serve(async (req) => {
       form.append('api_user', apiUser);
       form.append('api_secret', apiSecret);
       const res = await fetch('https://api.sightengine.com/1.0/check.json', { method: 'POST', body: form });
-      const result = await res.json();
+      const text = await res.text();
+      let result: Record<string, any> = {};
+      try {
+        result = JSON.parse(text);
+      } catch {
+        console.error('[moderate-image] réponse Sightengine illisible', res.status, text.slice(0, 300));
+      }
+      if (result.status !== 'success') {
+        console.error('[moderate-image] Sightengine a répondu', res.status, JSON.stringify(result.error ?? result).slice(0, 300));
+      }
       if (result.status !== 'success') {
         // En cas de panne du service : revue manuelle (publications) ou refus (selfies, messages…)
         decision = STRICT_BUCKETS.has(bucket) ? 'rejected' : 'review';
@@ -110,13 +143,13 @@ Deno.serve(async (req) => {
     const { error: saveError } = await admin
       .from('moderation_results')
       .upsert({ bucket, path, user_id: userId, decision, reason, provider, scores });
-    if (saveError) return json({ error: saveError.message }, 500);
+    if (saveError) return json({ error: saveError.message, step: 'save_result' }, 500);
 
     // 5. Une photo refusée est effacée tout de suite
     if (decision === 'rejected') await admin.storage.from(bucket).remove([path]);
 
     return json({ decision, reason });
   } catch (e) {
-    return json({ error: String(e) }, 500);
+    return json({ error: String(e), step: 'unexpected' }, 500);
   }
 });
