@@ -571,7 +571,7 @@ insert into public.admins (user_id) select id from public.profiles where usernam
 
 ### C. Fonctions serveur (navigateur)
 1. **Mettre à jour `purge-media`** (efface aussi les comptes supprimés depuis 30 jours) : Edge Functions → `purge-media` → **Code** → remplace tout par [purge-media/index.ts](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/functions/purge-media/index.ts) → **Deploy**.
-2. **Créer `moderate-image`** : Edge Functions → **Deploy a new function** → **Via Editor** → nom `moderate-image` → colle [moderate-image/index.ts](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/functions/moderate-image/index.ts) → **Deploy** (laisse « Verify JWT » **activé** pour celle-ci).
+2. **Créer `moderate-image`** : Edge Functions → **Deploy a new function** → **Via Editor** → nom `moderate-image` → colle [moderate-image/index.ts](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/functions/moderate-image/index.ts) → **Deploy**, puis onglet **Details** → désactive **Verify JWT** → **Save** (la fonction vérifie elle-même l'utilisateur ; avec les nouvelles clés Supabase, la vérification automatique bloque les appels de l'app).
 
 ### D. Sightengine (navigateur)
 1. Crée un compte sur https://sightengine.com (plan gratuit).

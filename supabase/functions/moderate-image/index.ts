@@ -7,6 +7,10 @@
 //   POST { "bucket": "posts", "path": "<user id>/<fichier>.jpg" }
 // Réponse : { "decision": "approved" | "review" | "rejected", "reason": "..." }
 //
+// Déploiement : désactiver « Verify JWT » dans Supabase. La fonction vérifie
+// elle-même la session (auth.getUser), ce qui marche avec les nouvelles clés
+// de signature Supabase, contrairement à la vérification automatique.
+//
 // Le verdict est enregistré dans la table moderation_results ; la base de
 // données refuse ensuite toute photo non approuvée (voir migrations phase 6).
 // Si les clés Sightengine ne sont pas configurées, la photo est approuvée
