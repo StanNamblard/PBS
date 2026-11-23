@@ -7,7 +7,7 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Linking, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Linking, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { captureRef } from 'react-native-view-shot';
 
@@ -119,7 +119,14 @@ export default function SelfieCameraScreen() {
     try {
       // Mode Double : on « photographie » l'assemblage affiché pour n'envoyer qu'une image
       const uri = shot.inset && composite.current
-        ? await captureRef(composite as never, { format: 'jpg', quality: 0.9, width: 1080, height: 1440 })
+        ? await captureRef(composite as never, {
+            format: 'jpg',
+            quality: 0.9,
+            width: 1080,
+            height: 1440,
+            // Sur le web, pas de fichier temporaire : l'image est renvoyée directement (data-uri)
+            result: Platform.OS === 'web' ? 'data-uri' : 'tmpfile',
+          })
         : shot.main;
       const state = await sendSelfie(userId, uri, shot.requestId);
       await qc.invalidateQueries({ queryKey: ['selfie'] });
