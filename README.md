@@ -90,6 +90,7 @@ Pour **chacun** des fichiers ci-dessous, **dans cet ordre** : nouvelle requête 
 | 9 | [20261126000100_phase5_messaging.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261126000100_phase5_messaging.sql) | 5 |
 | 10 | [20261127000000_phase6_moderation.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261127000000_phase6_moderation.sql) | 6 |
 | 11 | [20261127000100_phase6_privacy.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261127000100_phase6_privacy.sql) | 6 |
+| 12 | [20261127000200_phase6_server_grants.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261127000200_phase6_server_grants.sql) | 6 |
 
 #### 3.5 Vérifier que tout est en place
 
@@ -562,6 +563,7 @@ Voir le guide détaillé donné dans la conversation ; résumé :
 ### A. Base de données (navigateur) — 2 fichiers, dans l'ordre
 1. [20261127000000_phase6_moderation.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261127000000_phase6_moderation.sql)
 2. [20261127000100_phase6_privacy.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261127000100_phase6_privacy.sql)
+3. [20261127000200_phase6_server_grants.sql](https://github.com/StanNamblard/PBS/blob/claude/social-app-architecture-lb7tbk/supabase/migrations/20261127000200_phase6_server_grants.sql) (droits des fonctions serveur)
 
 ### B. Te nommer administrateur (navigateur)
 SQL Editor → page vide → colle (en remplaçant `ton_pseudo`) → **Run** :

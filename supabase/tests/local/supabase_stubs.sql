@@ -14,8 +14,9 @@ set search_path = "$user", public, extensions;
 
 -- Comme Supabase : droits par défaut larges, restreints ensuite par RLS / revoke
 grant usage on schema public to anon, authenticated, service_role;
-alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
-alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
+alter default privileges in schema public grant all on tables to anon, authenticated;
+alter default privileges in schema public grant all on functions to anon, authenticated;
+-- (projets Supabase récents : PAS de droits automatiques pour service_role)
 
 create schema auth;
 grant usage on schema auth to anon, authenticated, service_role;

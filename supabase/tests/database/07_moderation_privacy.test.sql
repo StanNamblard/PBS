@@ -1,7 +1,7 @@
 -- Tests pgTAP — Phase 6 : modération, back-office, sourdine, suppression, export.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(37);
+select plan(38);
 
 create function pg_temp.login(p_uid uuid) returns void language sql as $$
   select set_config('request.jwt.claims', json_build_object('sub', p_uid, 'role', 'authenticated')::text, true);
@@ -129,6 +129,11 @@ select is((select count(*)::int from public.get_profile('b0000000-0000-0000-0000
 select pg_temp.login('b0000000-0000-0000-0000-0000000000b1');
 select public.cancel_account_deletion();
 select is(public.get_onboarding_state(), 'complete', 'annuler la suppression restaure le compte');
+
+reset role;
+set local role service_role;
+select lives_ok($$ insert into public.moderation_results (bucket, path, decision, provider) values ('posts', 'x/serveur.jpg', 'approved', 'test') $$,
+  'la clé serveur (fonction moderate-image) peut enregistrer un verdict');
 
 select * from finish();
 rollback;
